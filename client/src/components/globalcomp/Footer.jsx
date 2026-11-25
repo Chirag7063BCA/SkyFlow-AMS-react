@@ -5,7 +5,6 @@ export default function Footer() {
   return (
     <footer className="site-footer">
       <div className="footer-inner">
-        {/* Brand */}
         <div className="footer-brand">
           <a href="#" className="footer-logo">
             <span>Sky</span>Flow
@@ -15,9 +14,7 @@ export default function Footer() {
           </p>
         </div>
 
-        {/* Links */}
         <div className="footer-links">
-          {/* Navigation */}
           <div className="footer-col">
             <h4>Navigation</h4>
             <ul>
@@ -28,7 +25,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Company */}
           <div className="footer-col">
             <h4>Company</h4>
             <ul>
@@ -39,7 +35,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Legal & Support */}
           <div className="footer-col">
             <h4>Legal & Support</h4>
             <ul>
@@ -51,7 +46,6 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Bottom Copyright */}
       <div className="footer-bottom">
         <p>&copy; 2026 SkyFlow AMS. All rights reserved.</p>
       </div>

@@ -127,8 +127,23 @@
   transition: transform .25s, opacity .25s, background 0.3s ease;
 }
 
+<<<<<<< Updated upstream
 .site-header.scrolled { background: transparent; box-shadow: none; }
 .site-header.scrolled .navbar-logo { color: #001d39; }
+=======
+/* Scrolled Header - Frosted light bar so logo and nav never overlap lower content */
+.site-header.scrolled {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(0, 29, 57, 0.08);
+  padding-bottom: 0.65rem;
+  box-shadow: 0 4px 20px rgba(0, 29, 57, 0.06);
+}
+.site-header.scrolled .navbar-logo {
+  color: #001d39;
+}
+>>>>>>> Stashed changes
 .site-header.scrolled .btn-signin {
   color: #001d39;
   border-color: rgba(0, 29, 57, 0.2);

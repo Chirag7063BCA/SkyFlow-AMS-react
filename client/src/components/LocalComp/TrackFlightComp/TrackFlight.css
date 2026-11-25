@@ -1,0 +1,1365 @@
+/* Track Flight Page Styles - Production Layout (scoped under .track-page) */
+.track-page {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+/* Hero Section fading seamlessly into white content surface */
+.track-page .track-hero {
+  position: relative;
+  min-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(7rem, 12vh, 9rem) clamp(1rem, 3vw, 2rem) clamp(4.5rem, 8vh, 6rem);
+  background:
+    linear-gradient(180deg, rgba(0, 29, 57, 0.25) 0%, rgba(0, 29, 57, 0.58) 65%, #ffffff 100%),
+    url("../../../assets/Hero.png") center/cover no-repeat;
+  color: #ffffff;
+}
+
+.track-page .track-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 28%, rgba(255, 255, 255, 0.14), transparent 36%);
+  pointer-events: none;
+}
+
+.track-page .track-hero-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.track-page .track-hero-content > * + * {
+  margin-top: 1.2rem;
+}
+
+.track-page .hero-eyebrow {
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.track-page .hero-title {
+  max-width: 900px;
+  font-size: clamp(2.5rem, 6.5vw, 5.2rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 0.25em;
+}
+
+.track-page .hero-title-accent {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.96);
+}
+
+.track-page .animated-text-wrapper {
+  display: inline-grid;
+  vertical-align: top;
+}
+
+.track-page .animated-text {
+  grid-area: 1 / 1;
+  opacity: 0;
+  animation: trackTextSwap 6s infinite cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.track-page .animated-text.delay {
+  animation-delay: 3s;
+}
+
+@keyframes trackTextSwap {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  15%,
+  35% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  50%,
+  100% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+.track-page .hero-copy {
+  max-width: 620px;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Search Card */
+.track-page .search-card {
+  width: 100%;
+  padding: 1.75rem;
+  margin-top: 1.5rem;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 28px 70px rgba(0, 29, 57, 0.22);
+  color: #0f2640;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.track-page .keyword-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.track-page .keyword-input {
+  width: 100%;
+  min-height: 54px;
+  padding: 0 1rem;
+  border-radius: 12px;
+  border: 1.5px solid rgba(15, 38, 64, 0.14);
+  background: #ffffff;
+  color: #001d39;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.track-page .keyword-input::placeholder {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.track-page .keyword-input:focus {
+  border-color: #d11243;
+  box-shadow: 0 0 0 3px rgba(209, 18, 67, 0.12);
+}
+
+.track-page .fields-wrapper {
+  display: flex;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.track-page .fields-row {
+  display: flex;
+  flex: 1;
+  background: #ffffff;
+  border: 1.5px solid rgba(15, 38, 64, 0.14);
+  border-radius: 14px;
+}
+
+.track-page .flight-field {
+  flex: 1;
+  min-width: 0;
+  padding: 0.85rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid rgba(15, 38, 64, 0.1);
+}
+
+.track-page .flight-field:last-child {
+  border-right: none;
+}
+
+.track-page .flight-field:hover {
+  background: rgba(15, 38, 64, 0.02);
+}
+
+.track-page .field-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #4e8ea2;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.track-page .field-control {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: #0f2640;
+  font: inherit;
+  font-size: 1.05rem;
+  font-weight: 700;
+  outline: none;
+  appearance: none;
+}
+
+.track-page .field-control::placeholder {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.track-page .field-control[type="date"] {
+  color-scheme: light;
+  min-height: 1.6rem;
+}
+
+.track-page .search-btn {
+  min-height: 70px;
+  padding: 0 2.25rem;
+  border: none;
+  border-radius: 14px;
+  background: #d11243;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 1.05rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+  box-shadow: 0 8px 22px rgba(209, 18, 67, 0.28);
+  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+}
+
+.track-page .search-btn:hover {
+  transform: translateY(-2px);
+  background: #b50e38;
+  box-shadow: 0 12px 26px rgba(209, 18, 67, 0.36);
+}
+
+.track-page .search-footer-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.track-page .quick-picks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.track-page .quick-picks-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.track-page .quick-pick-btn {
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: #0f2640;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.track-page .quick-pick-btn:hover {
+  border-color: #0a4174;
+  background: #eff6ff;
+  color: #0a4174;
+}
+
+.track-page .results-msg {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #0a4174;
+}
+
+/* Main Content Containers */
+.track-page .track-section {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+  scroll-margin-top: 96px;
+}
+
+/* Executive Dark-Navy Showcase Band (Why SkyFlow) */
+.track-page .track-section-tinted {
+  position: relative;
+  max-width: 100%;
+  padding: 5rem 1.5rem;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(14, 165, 233, 0.16), transparent 42%),
+    radial-gradient(circle at 85% 85%, rgba(209, 18, 67, 0.14), transparent 40%),
+    linear-gradient(135deg, #00152b 0%, #001d39 50%, #08335e 100%);
+  color: #ffffff;
+  overflow: hidden;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.track-page .track-section-tinted::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.track-page .track-section-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.track-page .section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin-bottom: 2.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.track-page .track-section-tinted .section-header {
+  border-bottom-color: rgba(255, 255, 255, 0.14);
+}
+
+.track-page .section-eyebrow {
+  display: inline-block;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #0a4174;
+  margin-bottom: 0.45rem;
+}
+
+.track-page .track-section-tinted .section-eyebrow {
+  color: #7bbde8;
+  background: rgba(123, 189, 232, 0.12);
+  border: 1px solid rgba(123, 189, 232, 0.28);
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  margin-bottom: 0.75rem;
+}
+
+.track-page .section-title {
+  font-size: clamp(1.65rem, 3.2vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #0f172a;
+  text-transform: uppercase;
+}
+
+.track-page .track-section-tinted .section-title {
+  color: #ffffff;
+}
+
+.track-page .section-note {
+  font-size: 0.95rem;
+  color: #475569;
+  max-width: 440px;
+  line-height: 1.55;
+}
+
+.track-page .section-header-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.track-page .rescan-sky-btn {
+  padding: 0.55rem 1.05rem;
+  border-radius: 999px;
+  border: 1px solid #0a4174;
+  background: #0a4174;
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(10, 65, 116, 0.2);
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.track-page .rescan-sky-btn:hover {
+  background: #001d39;
+  transform: translateY(-1px);
+}
+
+.track-page .track-section-tinted .section-note {
+  color: rgba(203, 213, 225, 0.88);
+}
+
+/* Live Flight Telemetry Panel */
+.track-page .tracker-panel {
+  scroll-margin-top: 96px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 22px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+  margin-bottom: 2.25rem;
+}
+
+.track-page .tracker-panel-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.25rem 1.75rem;
+  background: linear-gradient(90deg, #001d39 0%, #0a4174 100%);
+  color: #ffffff;
+}
+
+.track-page .tracker-identity {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+
+.track-page .tracker-identity h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+/* High-contrast status pills inside dark telemetry header */
+.track-page .tracker-panel-top .pill.on-time {
+  background: rgba(34, 197, 94, 0.2);
+  border-color: rgba(74, 222, 128, 0.45);
+  color: #4ade80;
+}
+
+.track-page .tracker-panel-top .pill.boarding {
+  background: rgba(59, 130, 246, 0.22);
+  border-color: rgba(96, 165, 250, 0.5);
+  color: #93c5fd;
+}
+
+.track-page .tracker-panel-top .pill.delayed {
+  background: rgba(239, 68, 68, 0.24);
+  border-color: rgba(252, 165, 165, 0.5);
+  color: #fca5a5;
+}
+
+.track-page .live-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #7bbde8;
+}
+
+.track-page .live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  animation: livePulse 1.8s infinite;
+}
+
+@keyframes livePulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.65);
+  }
+  70% {
+    box-shadow: 0 0 0 7px rgba(34, 197, 94, 0);
+  }
+}
+
+.track-page .tracker-close-btn {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 0.45rem 0.95rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.track-page .tracker-close-btn:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+/* Symmetrical 50 / 50 Vertical Split Inside Telemetry Panel */
+.track-page .tracker-split-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: stretch;
+  min-height: 460px;
+}
+
+.track-page .tracker-left-map {
+  position: relative;
+  border-right: 1px solid #e2e8f0;
+  background: #e8eef3;
+  display: flex;
+  flex-direction: column;
+  min-height: 460px;
+}
+
+.track-page .gmap-pane {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  min-height: 460px;
+}
+
+.track-page .gmap-canvas {
+  width: 100%;
+  height: 100%;
+  min-height: 460px;
+  z-index: 1;
+}
+
+/* Google Maps HUD & Legend Overlays */
+.track-page .gmap-hud-top {
+  position: absolute;
+  top: 12px;
+  left: 52px;
+  right: 12px;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.track-page .gmap-pill-badge {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.42rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.96);
+  color: #0f2640;
+  font-size: 0.76rem;
+  font-weight: 800;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.16);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.track-page .gmap-live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #1a73e8;
+}
+
+.track-page .gmap-live-dot.is-airborne {
+  background: #16a34a;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.22);
+}
+
+.track-page .gmap-control-btn {
+  pointer-events: auto;
+  padding: 0.42rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  background: rgba(255, 255, 255, 0.96);
+  color: #0f2640;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.14);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.track-page .gmap-control-btn:hover {
+  background: #1a73e8;
+  color: #ffffff;
+  border-color: #1a73e8;
+}
+
+.track-page .gmap-legend {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  z-index: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #1e293b;
+  font-size: 0.74rem;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.15);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.track-page .gmap-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.track-page .gmap-line-solid {
+  display: inline-block;
+  width: 22px;
+  height: 3.5px;
+  border-radius: 999px;
+  background: #1a73e8;
+}
+
+.track-page .gmap-line-dotted {
+  display: inline-block;
+  width: 22px;
+  height: 0;
+  border-top: 3px dotted #475569;
+}
+
+/* Custom Leaflet Google-Maps-Style Markers */
+.track-page .gmap-airport-marker,
+.track-page .gmap-plane-marker {
+  background: transparent;
+  border: none;
+}
+
+.track-page .gmap-pin {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.track-page .gmap-pin-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2.5px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  flex-shrink: 0;
+}
+
+.track-page .gmap-pin-origin .gmap-pin-dot {
+  background: #1a73e8;
+}
+
+.track-page .gmap-pin-dest .gmap-pin-dot {
+  background: #d11243;
+}
+
+.track-page .gmap-pin-label {
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 11px;
+  font-weight: 800;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.22);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+}
+
+.track-page .gmap-jet-wrap {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.track-page .gmap-jet-pulse {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(250, 204, 21, 0.25);
+  border: 1.5px solid rgba(250, 204, 21, 0.55);
+  animation: jetRadarPulse 2s infinite ease-out;
+}
+
+@keyframes jetRadarPulse {
+  0% {
+    transform: scale(0.75);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+.track-page .gmap-jet-svg {
+  position: relative;
+  display: block;
+  filter: drop-shadow(0 3px 6px rgba(15, 23, 42, 0.45));
+  transition: transform 0.08s linear;
+}
+
+/* Right Half: Balanced Flight Details Pane */
+.track-page .tracker-right-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.75rem;
+  background: #ffffff;
+  gap: 1.5rem;
+}
+
+.track-page .details-route-header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1.25rem;
+  padding-bottom: 1.35rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.track-page .details-endpoint {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.track-page .details-endpoint-right {
+  text-align: right;
+  align-items: flex-end;
+}
+
+.track-page .endpoint-code {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #001d39;
+  line-height: 1;
+}
+
+.track-page .endpoint-city {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.track-page .endpoint-time {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.track-page .details-progress-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 110px;
+}
+
+.track-page .tracker-phase-label {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #0a4174;
+  text-align: center;
+}
+
+.track-page .tracker-progress-track {
+  position: relative;
+  width: 100%;
+  height: 5px;
+  border-radius: 999px;
+  background: #e2e8f0;
+}
+
+.track-page .tracker-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #0a4174, #1a73e8);
+  transition: width 0.4s ease;
+}
+
+.track-page .tracker-plane-marker {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #001d39;
+  color: #ffffff;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 10px rgba(0, 29, 57, 0.28);
+  transition: left 0.4s ease;
+}
+
+.track-page .tracker-duration-label {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.track-page .details-grid-2x2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.track-page .detail-box {
+  padding: 0.95rem 1.05rem;
+  border-radius: 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.track-page .detail-label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+}
+
+.track-page .detail-value {
+  font-size: 0.96rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.track-page .details-advisory {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 1rem 1.15rem;
+  border-radius: 14px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+}
+
+.track-page .advisory-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #1a73e8;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.track-page .advisory-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #1d4ed8;
+  margin-bottom: 0.2rem;
+}
+
+.track-page .advisory-text {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1e3a8a;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* Status Filter Tabs */
+.track-page .status-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.track-page .status-tab {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #475569;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.track-page .status-tab:hover {
+  border-color: #0a4174;
+  color: #0a4174;
+}
+
+.track-page .status-tab.active {
+  background: #001d39;
+  border-color: #001d39;
+  color: #ffffff;
+}
+
+/* Clickable Flight Cards */
+.track-page .flights-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.track-page .flight-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.35rem 1.75rem;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  position: relative;
+  overflow: hidden;
+  gap: 2rem;
+  cursor: pointer;
+}
+
+.track-page .flight-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #0a4174, #0ea5e9);
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.track-page .flight-card:hover,
+.track-page .flight-card.is-selected {
+  transform: translateY(-2px);
+  background: #f8fbff;
+  border-color: #0ea5e9;
+  box-shadow: 0 12px 28px rgba(10, 65, 116, 0.1);
+}
+
+.track-page .flight-card:hover::before,
+.track-page .flight-card.is-selected::before {
+  opacity: 1;
+}
+
+.track-page .card-top {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  flex: 1;
+}
+
+.track-page .card-airline {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #0a4174;
+  margin-bottom: 0.3rem;
+}
+
+.track-page .card-route {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.track-page .card-time {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.track-page .card-time strong {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.track-page .card-time span {
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+.track-page .card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.track-page .pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.track-page .pill.on-time {
+  background: rgba(22, 163, 74, 0.12);
+  border-color: rgba(22, 163, 74, 0.25);
+  color: #15803d;
+}
+
+.track-page .pill.boarding {
+  background: rgba(37, 99, 235, 0.12);
+  border-color: rgba(37, 99, 235, 0.25);
+  color: #1d4ed8;
+}
+
+.track-page .pill.delayed {
+  background: rgba(220, 38, 38, 0.12);
+  border-color: rgba(220, 38, 38, 0.25);
+  color: #dc2626;
+}
+
+.track-page .pill.airborne {
+  background: rgba(14, 165, 233, 0.14);
+  border-color: rgba(14, 165, 233, 0.35);
+  color: #0369a1;
+}
+
+.track-page .track-action-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  background: #001d39;
+  color: #ffffff;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.track-page .flight-card.is-selected .track-action-pill {
+  background: #d11243;
+}
+
+/* Symmetrical 4-Column & 3-Column Feature Grids */
+.track-page .feature-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.35rem;
+}
+
+.track-page .feature-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.35rem;
+}
+
+/* Glassmorphic Feature Cards inside Dark Aviation Showcase Band */
+.track-page .track-section-tinted .feature-card {
+  position: relative;
+  overflow: hidden;
+  padding: 1.85rem 1.55rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 30px rgba(0, 10, 25, 0.22);
+  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.track-page .track-section-tinted .feature-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #38bdf8, #d11243);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.track-page .track-section-tinted .feature-card:hover {
+  transform: translateY(-6px);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(123, 189, 232, 0.45);
+  box-shadow: 0 22px 44px rgba(0, 10, 25, 0.36);
+}
+
+.track-page .track-section-tinted .feature-card:hover::before {
+  opacity: 1;
+}
+
+.track-page .feature-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.2rem;
+}
+
+.track-page .feature-tag {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.28rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(123, 189, 232, 0.14);
+  color: #7bbde8;
+  border: 1px solid rgba(123, 189, 232, 0.24);
+}
+
+.track-page .track-section-tinted .feature-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.26), rgba(123, 189, 232, 0.1));
+  border: 1px solid rgba(123, 189, 232, 0.3);
+  color: #7bbde8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0;
+}
+
+.track-page .track-section-tinted .feature-card h3 {
+  color: #ffffff;
+  font-size: 1.08rem;
+  font-weight: 800;
+  margin-bottom: 0.55rem;
+}
+
+.track-page .track-section-tinted .feature-card p {
+  color: rgba(203, 213, 225, 0.84);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* Elevated Light Feature Cards (Travel Essentials) */
+.track-page .feature-card {
+  position: relative;
+  overflow: hidden;
+  padding: 1.85rem 1.6rem;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.track-page .feature-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #0a4174, #0ea5e9);
+  opacity: 0.85;
+}
+
+.track-page .feature-card:hover {
+  transform: translateY(-4px);
+  border-color: #7bbde8;
+  box-shadow: 0 16px 34px rgba(10, 65, 116, 0.1);
+}
+
+.track-page .feature-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border: 1px solid rgba(10, 65, 116, 0.1);
+  color: #0a4174;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0;
+}
+
+.track-page .feature-card:not(.dark-feature-card) .feature-tag {
+  background: #eff6ff;
+  color: #0a4174;
+  border-color: rgba(10, 65, 116, 0.14);
+}
+
+.track-page .feature-card h3 {
+  color: #0f172a;
+  font-size: 1.08rem;
+  font-weight: 800;
+  margin-bottom: 0.55rem;
+}
+
+.track-page .feature-card p {
+  color: #475569;
+  font-size: 0.91rem;
+  line-height: 1.62;
+}
+
+/* Bottom Help Banner */
+.track-page .info-card {
+  padding: 2.5rem 2.25rem;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #001d39 0%, #0a4174 100%);
+  color: #ffffff;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.track-page .info-card .section-eyebrow {
+  color: #7bbde8;
+}
+
+.track-page .info-card .section-title {
+  color: #ffffff;
+  margin-bottom: 0.75rem;
+}
+
+.track-page .info-card .hero-copy {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.98rem;
+}
+
+.track-page .help-list {
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  color: #e2e8f0;
+  font-size: 0.94rem;
+  line-height: 1.55;
+  list-style: disc;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .track-page .feature-grid-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .track-page .info-card {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 960px) {
+  .track-page .tracker-split-body {
+    grid-template-columns: 1fr;
+  }
+
+  .track-page .tracker-left-map {
+    border-right: none;
+    border-bottom: 1px solid #e2e8f0;
+    min-height: 340px;
+  }
+
+  .track-page .gmap-pane,
+  .track-page .gmap-canvas {
+    min-height: 340px;
+  }
+
+  .track-page .fields-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .track-page .fields-row {
+    flex-wrap: wrap;
+  }
+
+  .track-page .flight-field {
+    flex: 1 1 calc(50% - 0.5rem);
+    border-right: none;
+    border-bottom: 1px solid rgba(15, 38, 64, 0.1);
+  }
+
+  .track-page .flight-field:last-child {
+    border-bottom: none;
+  }
+
+  .track-page .search-btn {
+    width: 100%;
+    min-height: 56px;
+  }
+
+  .track-page .flight-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .track-page .card-top {
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .track-page .card-meta {
+    justify-content: flex-start;
+  }
+
+  .track-page .feature-grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .track-page .track-hero {
+    padding: 6.5rem 1rem 3rem;
+  }
+
+  .track-page .search-card {
+    padding: 1.15rem;
+  }
+
+  .track-page .flight-field {
+    flex-basis: 100%;
+  }
+
+  .track-page .card-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .track-page .feature-grid-4,
+  .track-page .details-grid-2x2 {
+    grid-template-columns: 1fr;
+  }
+
+  .track-page .details-route-header {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .track-page .details-endpoint,
+  .track-page .details-endpoint-right {
+    align-items: center;
+    text-align: center;
+  }
+}

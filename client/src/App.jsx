@@ -4,13 +4,47 @@ import {
   Navigate,
   Route,
   Routes,
+  useLocation,
 } from 'react-router-dom';
 import Navbar from './components/globalcomp/Navbar';
 import LandingPage from './Pages/LandingPage';
 import FlightsPage from './Pages/FlightsPage';
+<<<<<<< Updated upstream
 import HelpPage from './Pages/HelpPage';
+=======
+import TrackFlightPage from './Pages/TrackFlightPage';
+import AdminPage from './Pages/AdminPage';
+>>>>>>> Stashed changes
 import Footer from './components/globalcomp/Footer';
 import LoginSidebar from './components/globalcomp/loginsidebar';
+
+function AppLayout() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
+
+  if (isAdminRoute) {
+    return (
+      <Routes>
+        <Route path="/admin/*" element={<AdminPage />} />
+      </Routes>
+    );
+  }
+
+  return (
+    <div className="flex min-h-screen flex-col bg-[#001D39]">
+      <Navbar />
+      <main className="flex-1">
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/flights" element={<FlightsPage />} />
+          <Route path="/track" element={<TrackFlightPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </main>
+      <Footer />
+    </div>
+  );
+}
 
 function App() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -42,6 +76,7 @@ function App() {
 
   return (
     <BrowserRouter>
+<<<<<<< Updated upstream
       <div className="flex min-h-screen flex-col bg-[#001D39]">
         <Navbar
           currentUser={currentUser}
@@ -64,6 +99,9 @@ function App() {
           onLoginSuccess={handleLoginSuccess}
         />
       </div>
+=======
+      <AppLayout />
+>>>>>>> Stashed changes
     </BrowserRouter>
   );
 }

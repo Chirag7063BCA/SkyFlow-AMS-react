@@ -1,4 +1,4 @@
-import React from 'react';
+import { Link } from 'react-router-dom';
 import './LandingStyles/wanderlust.css';
 import beachImg from '../../../assets/wanderlust_beach.jpg';
 
@@ -19,7 +19,7 @@ export default function Wanderlust() {
               Discover top domestic & international destinations with exclusive flight perks.
             </p>
             <div className="cta-btn-group">
-              <a href="#flights" className="cta-pill-btn">
+              <Link to="/flights" className="cta-pill-btn">
                 <span>EXPLORE FLIGHTS NOW</span>
                 <svg
                   width="18"
@@ -34,7 +34,7 @@ export default function Wanderlust() {
                   <line x1="5" y1="12" x2="19" y2="12"></line>
                   <polyline points="12 5 19 12 12 19"></polyline>
                 </svg>
-              </a>
+              </Link>
             </div>
           </div>
           <div className="cta-right-img-box">

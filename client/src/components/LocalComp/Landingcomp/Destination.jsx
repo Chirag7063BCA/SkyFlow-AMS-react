@@ -1,4 +1,4 @@
-import React from 'react';
+import { Link } from 'react-router-dom';
 import './LandingStyles/destination.css';
 import saharaImg from '../../../assets/destination_sahara.jpg';
 import oasisImg from '../../../assets/destination_oasis.jpg';
@@ -55,9 +55,9 @@ export default function Destination() {
                 <span className="card-title">Kashmir</span>
               </div>
             </div>
-            <a href="#flights" className="see-more-btn">
+            <Link to="/flights" className="see-more-btn">
               <span>See More Destinations</span>
-            </a>
+            </Link>
           </div>
         </div>
       </div>

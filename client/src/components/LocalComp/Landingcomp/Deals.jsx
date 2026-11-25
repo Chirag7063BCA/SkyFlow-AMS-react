@@ -1,4 +1,4 @@
-import React from 'react';
+import { Link } from 'react-router-dom';
 import './LandingStyles/deals.css';
 import winterEscapeImg from '../../../assets/winter_escape.jpg';
 import familyFunImg from '../../../assets/family_fun.jpg';
@@ -95,9 +95,9 @@ export default function Deals() {
                   <br />
                   UP TO 35% OFF FLIGHTS
                 </h3>
-                <a href="#flights" className="deal-btn">
+                <Link to="/flights" className="deal-btn">
                   View Details
-                </a>
+                </Link>
               </div>
             </div>
 
@@ -110,9 +110,9 @@ export default function Deals() {
                   <br />
                   CHILD TRAVELS FREE
                 </h3>
-                <a href="#flights" className="deal-btn">
+                <Link to="/flights" className="deal-btn">
                   View Details
-                </a>
+                </Link>
               </div>
             </div>
           </div>

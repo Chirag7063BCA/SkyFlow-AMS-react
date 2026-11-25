@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Globalstyles/footer.css';
 
 export default function Footer() {
@@ -6,9 +7,9 @@ export default function Footer() {
     <footer className="site-footer">
       <div className="footer-inner">
         <div className="footer-brand">
-          <a href="#" className="footer-logo">
+          <Link to="/" className="footer-logo">
             <span>Sky</span>Flow
-          </a>
+          </Link>
           <p className="footer-tagline">
             Elevating airline management and flight booking experience worldwide.
           </p>
@@ -18,10 +19,10 @@ export default function Footer() {
           <div className="footer-col">
             <h4>Navigation</h4>
             <ul>
-              <li><a href="#home">Home</a></li>
-              <li><a href="#flights">Flights</a></li>
-              <li><a href="#">My Bookings</a></li>
-              <li><a href="#">Track Flight</a></li>
+              <li><Link to="/">Home</Link></li>
+              <li><Link to="/flights">Flights</Link></li>
+              <li><Link to="/bookings">My Bookings</Link></li>
+              <li><Link to="/track">Track Flight</Link></li>
             </ul>
           </div>
 

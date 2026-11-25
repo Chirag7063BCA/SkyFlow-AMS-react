@@ -1,11 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { NavLink } from 'react-router-dom';
 import './Globalstyles/navbar.css';
 import logoGif from '../../assets/navbar logo.gif';
+
+const navItems = [
+  { label: 'Home', to: '/', end: true },
+  { label: 'Flights', to: '/flights' },
+  { label: 'Track Flight', to: '/track' },
+  { label: 'My Bookings', to: '/bookings' },
+  { label: 'Help', to: '/help' },
+];
 
 export default function Navbar({ onOpenAuth }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [activeRoute, setActiveRoute] = useState('home');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,71 +23,70 @@ export default function Navbar({ onOpenAuth }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleAuthClick = (e) => {
-    e.preventDefault();
+  const handleAuthClick = (event) => {
+    event.preventDefault();
     if (onOpenAuth) {
       onOpenAuth();
-    } else if (typeof window !== 'undefined' && typeof window.openDrawer === 'function') {
+    } else if (typeof window.openDrawer === 'function') {
       window.openDrawer();
     }
   };
 
-  const navItems = [
-    { label: 'Home', route: 'home', href: '#home' },
-    { label: 'Flights', route: 'flights', href: '#flights' },
-    { label: 'Track Flight', route: 'track', href: '#track' },
-    { label: 'My Bookings', route: 'bookings', href: '#bookings' },
-    { label: 'Help', route: 'help', href: '#help' },
-  ];
-
   return (
     <header className={`site-header ${isScrolled ? 'scrolled' : ''}`}>
       <nav className="navbar">
-        {/* Logo */}
-        <a 
-          href="#" 
+        <NavLink
+          to="/"
+          end
           className="navbar-logo"
-          onClick={() => setActiveRoute('home')}
+          onClick={() => setIsMobileOpen(false)}
         >
-          <img src={logoGif} alt="SkyFlow Logo" className="logo-gif" id="navbarLogoImg" />
+          <img
+            src={logoGif}
+            alt="SkyFlow Logo"
+            className="logo-gif"
+            id="navbarLogoImg"
+          />
           <span>Sky</span>Flow
-        </a>
+        </NavLink>
 
-        {/* Mobile Toggle Input & Hamburger */}
-        <input 
-          type="checkbox" 
-          id="nav-toggle" 
+        <input
+          type="checkbox"
+          id="nav-toggle"
           className="nav-toggle"
           checked={isMobileOpen}
-          onChange={(e) => setIsMobileOpen(e.target.checked)}
+          onChange={(event) => setIsMobileOpen(event.target.checked)}
         />
-        <label htmlFor="nav-toggle" className="mobile-toggle" aria-label="Toggle navigation">
+        <label
+          htmlFor="nav-toggle"
+          className="mobile-toggle"
+          aria-label="Toggle navigation"
+          aria-expanded={isMobileOpen}
+        >
           <span></span>
           <span></span>
           <span></span>
         </label>
 
-        {/* Nav Links Center */}
         <div className="navbar-center">
           <ul className="nav-menu">
             {navItems.map((item) => (
-              <li key={item.route}>
-                <a
-                  href={item.href}
-                  className={`nav-link ${activeRoute === item.route ? 'active' : ''}`}
-                  onClick={() => {
-                    setActiveRoute(item.route);
-                    setIsMobileOpen(false);
-                  }}
+              <li key={item.to}>
+                <NavLink
+                  to={item.to}
+                  end={item.end}
+                  className={({ isActive }) =>
+                    `nav-link ${isActive ? 'active' : ''}`
+                  }
+                  onClick={() => setIsMobileOpen(false)}
                 >
                   {item.label}
-                </a>
+                </NavLink>
               </li>
             ))}
           </ul>
         </div>
 
-        {/* Action Buttons */}
         <div className="nav-actions" id="navActions">
           <button
             type="button"

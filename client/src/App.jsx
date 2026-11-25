@@ -9,16 +9,21 @@ import {
 import Navbar from './components/globalcomp/Navbar';
 import LandingPage from './Pages/LandingPage';
 import FlightsPage from './Pages/FlightsPage';
-<<<<<<< Updated upstream
 import HelpPage from './Pages/HelpPage';
-=======
 import TrackFlightPage from './Pages/TrackFlightPage';
 import AdminPage from './Pages/AdminPage';
->>>>>>> Stashed changes
 import Footer from './components/globalcomp/Footer';
 import LoginSidebar from './components/globalcomp/loginsidebar';
 
-function AppLayout() {
+function AppLayout({
+  currentUser,
+  isAuthOpen,
+  authDefaultTab,
+  onOpenAuth,
+  onCloseAuth,
+  onLoginSuccess,
+  onLogout,
+}) {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
 
@@ -32,16 +37,27 @@ function AppLayout() {
 
   return (
     <div className="flex min-h-screen flex-col bg-[#001D39]">
-      <Navbar />
+      <Navbar
+        currentUser={currentUser}
+        onOpenAuth={onOpenAuth}
+        onLogout={onLogout}
+      />
       <main className="flex-1">
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/flights" element={<FlightsPage />} />
           <Route path="/track" element={<TrackFlightPage />} />
+          <Route path="/help" element={<HelpPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
       <Footer />
+      <LoginSidebar
+        isOpen={isAuthOpen}
+        onClose={onCloseAuth}
+        defaultTab={authDefaultTab}
+        onLoginSuccess={onLoginSuccess}
+      />
     </div>
   );
 }
@@ -76,32 +92,15 @@ function App() {
 
   return (
     <BrowserRouter>
-<<<<<<< Updated upstream
-      <div className="flex min-h-screen flex-col bg-[#001D39]">
-        <Navbar
-          currentUser={currentUser}
-          onOpenAuth={handleOpenAuth}
-          onLogout={handleLogout}
-        />
-        <main className="flex-1">
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/flights" element={<FlightsPage />} />
-            <Route path="/help" element={<HelpPage />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </main>
-        <Footer />
-        <LoginSidebar
-          isOpen={isAuthOpen}
-          onClose={() => setIsAuthOpen(false)}
-          defaultTab={authDefaultTab}
-          onLoginSuccess={handleLoginSuccess}
-        />
-      </div>
-=======
-      <AppLayout />
->>>>>>> Stashed changes
+      <AppLayout
+        currentUser={currentUser}
+        isAuthOpen={isAuthOpen}
+        authDefaultTab={authDefaultTab}
+        onOpenAuth={handleOpenAuth}
+        onCloseAuth={() => setIsAuthOpen(false)}
+        onLoginSuccess={handleLoginSuccess}
+        onLogout={handleLogout}
+      />
     </BrowserRouter>
   );
 }

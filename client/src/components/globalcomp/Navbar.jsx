@@ -1,25 +1,25 @@
 import { useState, useEffect } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
 import './Globalstyles/navbar.css';
 import logoGif from '../../assets/navbar logo.gif';
 import ProfileDropdown from './ProfileDropdown';
 
-const NAV_ITEMS = [
-  { label: 'Home', route: 'home', href: '#home' },
-  { label: 'Flights', route: 'flights', href: '#flights' },
-  { label: 'Track Flight', route: 'track', href: '#track' },
-  { label: 'My Bookings', route: 'bookings', href: '#bookings' },
-  { label: 'Help', route: 'help', href: '#help' },
+const navItems = [
+  { label: 'Home', to: '/', end: true },
+  { label: 'Flights', to: '/flights' },
+  { label: 'Track Flight', to: '/track' },
+  { label: 'My Bookings', to: '/bookings' },
+  { label: 'Help', to: '/help' },
 ];
 
 export default function Navbar({
-  activeRoute = 'home',
-  onRouteChange,
   currentUser,
   onOpenAuth,
   onLogout
 }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -29,25 +29,41 @@ export default function Navbar({
 
   const handleNav = (route) => {
     setIsMobileOpen(false);
-    onRouteChange?.(route);
+    if (route === 'home') navigate('/');
+    else navigate(`/${route}`);
   };
 
   return (
     <header className={`site-header ${isScrolled ? 'scrolled' : ''}`}>
       <nav className="navbar">
-        <a href="#home" className="navbar-logo" onClick={() => handleNav('home')}>
-          <img src={logoGif} alt="SkyFlow Logo" className="logo-gif" id="navbarLogoImg" />
+        <NavLink
+          to="/"
+          end
+          className="navbar-logo"
+          onClick={() => setIsMobileOpen(false)}
+        >
+          <img
+            src={logoGif}
+            alt="SkyFlow Logo"
+            className="logo-gif"
+            id="navbarLogoImg"
+          />
           <span>Sky</span>Flow
-        </a>
+        </NavLink>
 
-        <input 
-          type="checkbox" 
-          id="nav-toggle" 
+        <input
+          type="checkbox"
+          id="nav-toggle"
           className="nav-toggle"
           checked={isMobileOpen}
           onChange={(e) => setIsMobileOpen(e.target.checked)}
         />
-        <label htmlFor="nav-toggle" className="mobile-toggle" aria-label="Toggle navigation">
+        <label
+          htmlFor="nav-toggle"
+          className="mobile-toggle"
+          aria-label="Toggle navigation"
+          aria-expanded={isMobileOpen}
+        >
           <span></span>
           <span></span>
           <span></span>
@@ -55,18 +71,18 @@ export default function Navbar({
 
         <div className="navbar-center">
           <ul className="nav-menu">
-            {NAV_ITEMS.map((item) => (
-              <li key={item.route}>
-                <a
-                  href={item.href}
-                  className={`nav-link ${activeRoute === item.route ? 'active' : ''}`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleNav(item.route);
-                  }}
+            {navItems.map((item) => (
+              <li key={item.to}>
+                <NavLink
+                  to={item.to}
+                  end={item.end}
+                  className={({ isActive }) =>
+                    `nav-link ${isActive ? 'active' : ''}`
+                  }
+                  onClick={() => setIsMobileOpen(false)}
                 >
                   {item.label}
-                </a>
+                </NavLink>
               </li>
             ))}
           </ul>

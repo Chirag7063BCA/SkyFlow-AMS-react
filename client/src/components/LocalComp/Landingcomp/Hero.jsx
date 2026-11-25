@@ -1,13 +1,24 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './LandingStyles/hero.css';
+
+const getDateValue = (daysFromToday) => {
+  const date = new Date();
+  date.setDate(date.getDate() + daysFromToday);
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+};
 
 export default function Hero({ onSearch }) {
   const [tripType, setTripType] = useState('oneWay');
   const [departureFrom, setDepartureFrom] = useState('');
   const [goingTo, setGoingTo] = useState('');
-  const [departureDate, setDepartureDate] = useState('2026-08-04');
-  const [returnDate, setReturnDate] = useState('2026-08-11');
-  const [travellersClass] = useState('Economy');
+  const [departureDate, setDepartureDate] = useState(() => getDateValue(1));
+  const [returnDate, setReturnDate] = useState(() => getDateValue(7));
+  const travellersClass = 'Economy';
   const [fareType, setFareType] = useState('regular');
   const [nonStop, setNonStop] = useState(false);
   const [resultsMsg, setResultsMsg] = useState('Please enter origin or destination city.');
@@ -17,8 +28,8 @@ export default function Hero({ onSearch }) {
     setGoingTo(departureFrom);
   };
 
-  const handleSearch = (e) => {
-    if (e) e.preventDefault();
+  const handleSearch = (event) => {
+    event.preventDefault();
     if (!departureFrom.trim() || !goingTo.trim()) {
       setResultsMsg('Please enter origin or destination city.');
       return;
@@ -54,9 +65,7 @@ export default function Hero({ onSearch }) {
           Discover seamless travel experiences, curated for comfort, speed, and style.
         </p>
 
-        {/* Search Card */}
-        <div className="search-card">
-          {/* Trip Type */}
+        <form className="search-card" onSubmit={handleSearch}>
           <fieldset className="trip-type">
             <legend className="sr-only">Trip type</legend>
             <label className={`trip-label ${tripType === 'oneWay' ? 'active' : ''}`}>
@@ -91,7 +100,6 @@ export default function Hero({ onSearch }) {
             </label>
           </fieldset>
 
-          {/* Airport + Date Fields */}
           <div className="fields-wrapper">
             <div className="fields-row">
               <div className="flight-field">
@@ -107,7 +115,6 @@ export default function Hero({ onSearch }) {
                   value={departureFrom}
                   onChange={(e) => setDepartureFrom(e.target.value)}
                 />
-                <div id="departureFromDropdown" className="autocomplete-dropdown"></div>
               </div>
 
               <button
@@ -133,7 +140,6 @@ export default function Hero({ onSearch }) {
                   value={goingTo}
                   onChange={(e) => setGoingTo(e.target.value)}
                 />
-                <div id="goingToDropdown" className="autocomplete-dropdown"></div>
               </div>
 
               <div className="flight-field">
@@ -145,7 +151,13 @@ export default function Hero({ onSearch }) {
                   type="date"
                   className="field-control"
                   value={departureDate}
-                  onChange={(e) => setDepartureDate(e.target.value)}
+                  min={getDateValue(0)}
+                  onChange={(event) => {
+                    setDepartureDate(event.target.value);
+                    if (returnDate < event.target.value) {
+                      setReturnDate(event.target.value);
+                    }
+                  }}
                 />
               </div>
 
@@ -158,6 +170,8 @@ export default function Hero({ onSearch }) {
                   type="date"
                   className="field-control"
                   value={returnDate}
+                  min={departureDate}
+                  disabled={tripType === 'oneWay'}
                   onChange={(e) => setReturnDate(e.target.value)}
                 />
               </div>
@@ -176,21 +190,18 @@ export default function Hero({ onSearch }) {
                   autoComplete="off"
                   style={{ cursor: 'pointer' }}
                 />
-                <div id="travellersClassDropdown" className="autocomplete-dropdown"></div>
               </div>
             </div>
 
-            <button className="search-btn" id="searchBtn" type="button" onClick={handleSearch}>
+            <button className="search-btn" id="searchBtn" type="submit">
               Search
             </button>
           </div>
 
-          {/* Result Message */}
           <p className="results-msg" id="resultsMsg" aria-live="polite">
             {resultsMsg}
           </p>
 
-          {/* Special Fares */}
           <div className="fares-row">
             <div className="fare-options">
               <label className={`fare-label ${fareType === 'regular' ? 'active' : ''}`}>
@@ -253,7 +264,7 @@ export default function Hero({ onSearch }) {
               </span>
             </label>
           </div>
-        </div>
+        </form>
       </div>
     </section>
   );

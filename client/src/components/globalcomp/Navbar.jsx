@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import './Globalstyles/navbar.css';
 import logoGif from '../../assets/navbar logo.gif';
 import ProfileDropdown from './ProfileDropdown';
+import { useAuth } from '../../context/useAuth';
 
 const navItems = [
   { label: 'Home', to: '/', end: true },
@@ -12,11 +13,8 @@ const navItems = [
   { label: 'Help', to: '/help' },
 ];
 
-export default function Navbar({
-  currentUser,
-  onOpenAuth,
-  onLogout
-}) {
+export default function Navbar() {
+  const { currentUser, openAuth, handleLogout } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const navigate = useNavigate();
@@ -92,7 +90,7 @@ export default function Navbar({
           {currentUser ? (
             <ProfileDropdown
               user={currentUser}
-              onLogout={onLogout}
+              onLogout={handleLogout}
               onNavigate={handleNav}
             />
           ) : (
@@ -102,7 +100,7 @@ export default function Navbar({
               id="openSignupBtn"
               onClick={(e) => {
                 e.preventDefault();
-                onOpenAuth?.('signin');
+                openAuth('signin');
               }}
               title="Sign In / Join"
               aria-label="Sign In / Join"

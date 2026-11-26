@@ -17,17 +17,51 @@ const addDays = (date, amount) => {
   return result;
 };
 
-export default function FlightHeader({ airports = [], onSearch }) {
+const parseSearchDate = (value, fallback) => {
+  if (!value) return fallback;
+  if (value instanceof Date) return value;
+
+  const [year, month, day] = value.split('-').map(Number);
+  return new Date(year, month - 1, day);
+};
+
+const normalizeCabinClass = (value) => {
+  if (value === 'Business' || value === 'Business Class') return 'Business Class';
+  if (value === 'First Class') return 'First Class';
+  return 'Economy / Premium';
+};
+
+export default function FlightHeader({
+  airports = [],
+  initialSearch,
+  onSearch,
+}) {
   const formRef = useRef(null);
   const [today] = useState(() => startOfDay(new Date()));
-  const [tripType, setTripType] = useState('Round Trip');
-  const [from, setFrom] = useState('');
-  const [to, setTo] = useState('');
-  const [departureDate, setDepartureDate] = useState(() => addDays(today, 1));
-  const [returnDate, setReturnDate] = useState(() => addDays(today, 2));
-  const [travellers, setTravellers] = useState(1);
-  const [cabinClass, setCabinClass] = useState('Economy / Premium');
-  const [fareType, setFareType] = useState('regular');
+  const [tripType, setTripType] = useState(
+    () => initialSearch?.tripType || 'Round Trip',
+  );
+  const [from, setFrom] = useState(() => initialSearch?.from || '');
+  const [to, setTo] = useState(() => initialSearch?.to || '');
+  const [departureDate, setDepartureDate] = useState(() =>
+    parseSearchDate(initialSearch?.departureDate, addDays(today, 1)),
+  );
+  const [returnDate, setReturnDate] = useState(() =>
+    initialSearch?.returnDate
+      ? parseSearchDate(initialSearch.returnDate, addDays(today, 2))
+      : initialSearch?.tripType === 'One Way'
+        ? null
+        : addDays(today, 2),
+  );
+  const [travellers, setTravellers] = useState(
+    () => initialSearch?.travellers || 1,
+  );
+  const [cabinClass, setCabinClass] = useState(() =>
+    normalizeCabinClass(initialSearch?.cabinClass),
+  );
+  const [fareType, setFareType] = useState(
+    () => initialSearch?.fareType || 'regular',
+  );
   const [openMenu, setOpenMenu] = useState(null);
 
   useEffect(() => {
@@ -67,7 +101,7 @@ export default function FlightHeader({ airports = [], onSearch }) {
       from,
       to,
       departureDate,
-      returnDate: tripType === 'Round Trip' ? returnDate : null,
+      returnDate: tripType === 'One Way' ? null : returnDate,
       travellers,
       cabinClass,
       fareType,

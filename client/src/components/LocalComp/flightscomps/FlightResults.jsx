@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import logo from '../../../assets/navbar logo.gif';
+import FlightBP from './FlightBookingProcessComp/FlightBP';
 import './FlightsStyles/FlightResults.css';
 
 const currencies = {
@@ -48,44 +49,68 @@ const locationMatches = (city, code, input) => {
 const formatPrice = (amount, currency) =>
   `${currency.symbol}${Math.round(amount * currency.rate).toLocaleString()}`;
 
-function FlightCard({ flight, index, currency }) {
+function FlightCard({ flight, index, currency, search }) {
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const closeBooking = useCallback(() => setIsBookingOpen(false), []);
   const statusClass = String(flight.status || '')
     .toLowerCase()
     .replace(/\s+/g, '-');
   const stopCount = getStopCount(flight);
   const stopLabel =
     stopCount === 0 ? 'Non-stop' : `${stopCount} ${stopCount === 1 ? 'stop' : 'stops'}`;
+  const travellerCount = Math.max(1, Math.floor(Number(search?.travellers) || 1));
+  const formattedPrice = formatPrice(parseFare(flight.fare), currency);
 
   return (
-    <article
-      className="flight-card"
-      style={{ animationDelay: `${Math.min(index, 8) * 0.03}s` }}
-    >
-      <div className="card-top">
-        <div>
-          <p className="card-airline">
-            {flight.flightNumber} · {flight.airline}
-          </p>
-          <h3 className="card-route">
-            {flight.originCity} → {flight.destinationCity}
-          </h3>
+    <>
+      <article
+        className="flight-card"
+        style={{ animationDelay: `${Math.min(index, 8) * 0.03}s` }}
+      >
+        <div className="card-top">
+          <div>
+            <p className="card-airline">
+              {flight.flightNumber} · {flight.airline}
+            </p>
+            <h3 className="card-route">
+              {flight.originCity} → {flight.destinationCity}
+            </h3>
+          </div>
+          <div className="card-time">
+            <strong>
+              {flight.departureTime} – {flight.arrivalTime}
+            </strong>
+            <span>{flight.duration}</span>
+          </div>
         </div>
-        <div className="card-time">
-          <strong>
-            {flight.departureTime} – {flight.arrivalTime}
-          </strong>
-          <span>{flight.duration}</span>
+        <div className="card-meta">
+          <span className="pill">
+            {flight.fromAirportCode} → {flight.toAirportCode}
+          </span>
+          <span className="pill">{stopLabel}</span>
+          {flight.status && <span className={`pill ${statusClass}`}>{flight.status}</span>}
+          <span className="card-price">{formattedPrice}</span>
+          <button
+            className="flight-book-button"
+            type="button"
+            onClick={() => setIsBookingOpen(true)}
+          >
+            Book flight
+          </button>
         </div>
-      </div>
-      <div className="card-meta">
-        <span className="pill">
-          {flight.fromAirportCode} → {flight.toAirportCode}
-        </span>
-        <span className="pill">{stopLabel}</span>
-        {flight.status && <span className={`pill ${statusClass}`}>{flight.status}</span>}
-        <span className="card-price">{formatPrice(parseFare(flight.fare), currency)}</span>
-      </div>
-    </article>
+      </article>
+      {isBookingOpen && (
+        <FlightBP
+          flight={flight}
+          departureDate={search?.departureDate}
+          travellerCount={travellerCount}
+          priceLabel={formattedPrice}
+          fareAmount={parseFare(flight.fare)}
+          formatFare={(amount) => formatPrice(amount, currency)}
+          onClose={closeBooking}
+        />
+      )}
+    </>
   );
 }
 
@@ -120,6 +145,8 @@ export default function FlightResults({ flights = [], search }) {
         flight.toAirportCode,
         search.to || '',
       );
+      const matchesNonStop =
+        !search.nonStop || flight.nonStop === true || stopCount === 0;
       const matchesPrice = fare <= maxPrice;
       const matchesStops =
         selectedStops.length === 0 ||
@@ -132,6 +159,7 @@ export default function FlightResults({ flights = [], search }) {
       return (
         matchesFrom &&
         matchesTo &&
+        matchesNonStop &&
         matchesPrice &&
         matchesStops &&
         matchesAirline
@@ -205,6 +233,7 @@ export default function FlightResults({ flights = [], search }) {
                     flight={flight}
                     index={index}
                     currency={currency}
+                    search={search}
                   />
                 ))}
                 {matchingFlights.length > displayLimit && (

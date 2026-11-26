@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -26,6 +28,34 @@ public class AuthController {
     @GetMapping("/health")
     public ResponseEntity<String> health() {
         return ResponseEntity.ok("SkyFlow Auth API is running!");
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<Map<String, Object>> getAllUsers() {
+        List<Map<String, Object>> regularUsers = userRepository.findAll().stream()
+                .map(u -> Map.<String, Object>of(
+                        "id", u.getId(),
+                        "fullName", u.getFullName(),
+                        "email", u.getEmail(),
+                        "type", "Standard"
+                ))
+                .toList();
+
+        List<Map<String, Object>> googleUsers = googleUserRepository.findAll().stream()
+                .map(g -> Map.<String, Object>of(
+                        "id", g.getId(),
+                        "fullName", g.getName(),
+                        "email", g.getEmail(),
+                        "picture", g.getPicture() != null ? g.getPicture() : "",
+                        "type", "Google"
+                ))
+                .toList();
+
+        return ResponseEntity.ok(Map.of(
+                "totalUsers", regularUsers.size() + googleUsers.size(),
+                "standardUsers", regularUsers,
+                "googleUsers", googleUsers
+        ));
     }
 
     @PostMapping("/register")

@@ -34,6 +34,9 @@ Start the Spring Boot server:
 
 The backend will start at **`http://localhost:8080`** and automatically sync with the shared database tables (`users` and `google_users`).
 
+To inspect all registered users directly in your browser:
+Visit **`http://localhost:8080/api/auth/users`**.
+
 ---
 
 ### 2. Frontend Setup (React + Vite)
@@ -46,6 +49,23 @@ npm run dev
 ```
 
 Open **`http://localhost:5173`** in your browser.
+
+---
+
+## Shared Cloud Database (Clever Cloud MySQL)
+
+All collaborators share the same synchronized cloud database. No local MySQL installation is needed.
+
+### Connecting via MySQL Workbench / DBeaver / DataGrip:
+- **Host**: `bfqi1o7y16bhcle8bt1n-mysql.services.clever-cloud.com`
+- **Port**: `3306`
+- **Database / Schema**: `bfqi1o7y16bhcle8bt1n`
+- **Username**: `ug0vaiox7yegqoc9`
+- **Password**: `nwVcQivhd9fes4CczWzR`
+
+> [!TIP]
+> **Connection Limit Notice:**
+> Clever Cloud free tier allows a maximum of 5 concurrent connections. Spring Boot is tuned with a small HikariCP pool (`maximum-pool-size=2`). Please close GUI tools like MySQL Workbench when not actively inspecting tables to keep connection slots open for teammates.
 
 ---
 

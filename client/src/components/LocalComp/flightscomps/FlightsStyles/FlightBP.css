@@ -1,0 +1,792 @@
+.flight-booking-backdrop {
+  position: fixed;
+  z-index: 10001;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(8, 24, 42, 0.72);
+}
+
+.flight-booking-dialog {
+  --booking-navy: #001d39;
+  --booking-blue: #287fbd;
+  --booking-sky: #7bbde8;
+
+  display: flex;
+  width: min(1100px, 100%);
+  max-height: 92vh;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 18px 60px rgba(0, 29, 57, 0.28);
+  color: #172b3b;
+}
+
+.flight-booking-header,
+.flight-booking-actions,
+.flight-booking-summary-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.flight-booking-header {
+  padding: 1.25rem 1.75rem;
+  background: linear-gradient(110deg, var(--booking-navy), #123e63);
+  color: #fff;
+}
+
+.flight-booking-header p,
+.flight-booking-header h2 {
+  margin: 0;
+}
+
+.flight-booking-header p,
+.flight-booking-kicker {
+  color: var(--booking-sky);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.flight-booking-header h2 {
+  margin-top: 0.25rem;
+  color: #fff;
+  font-size: 1.7rem;
+}
+
+.flight-booking-header button {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.5rem;
+}
+
+.flight-booking-header button:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.flight-booking-steps {
+  display: flex;
+  justify-content: space-around;
+  gap: 0.5rem;
+  padding: 1rem 1.75rem;
+  border-bottom: 1px solid #e3eaf0;
+  background: #eef6fb;
+}
+
+.flight-booking-steps button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 0;
+  background: transparent;
+  color: #657887;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.98rem;
+  font-weight: 700;
+}
+
+.flight-booking-steps button:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.flight-booking-steps button[aria-current='step'] {
+  color: var(--booking-navy);
+}
+
+.flight-booking-steps button span {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid #cbd7df;
+  border-radius: 50%;
+  background: #fff;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.flight-booking-steps button[aria-current='step'] span {
+  border-color: var(--booking-blue);
+  background: var(--booking-blue);
+  color: #fff;
+}
+
+.flight-booking-content {
+  display: grid;
+  min-height: 0;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  overflow-y: auto;
+}
+
+.flight-booking-main {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  padding: 2rem;
+}
+
+.flight-booking-panel h3 {
+  margin: 0;
+  color: var(--booking-navy);
+  font-size: 1.6rem;
+}
+
+.flight-booking-kicker {
+  margin: 0 0 0.3rem;
+}
+
+.flight-booking-intro {
+  margin: 0.5rem 0 1.25rem;
+  color: #536c7d;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.flight-booking-route {
+  display: grid;
+  grid-template-columns: 1fr 0.75fr 1fr;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  border: 1px solid #e2ebf1;
+  border-radius: 12px;
+  background: #f0f7fb;
+}
+
+.flight-booking-route > div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.flight-booking-route > div > span,
+.flight-booking-route small,
+.flight-booking-flight-meta dt,
+.flight-booking-review dt {
+  color: #738493;
+  font-size: 0.85rem;
+}
+
+.flight-booking-route strong {
+  font-size: 1.05rem;
+}
+
+.flight-booking-route b {
+  color: var(--booking-navy);
+  font-size: 1.4rem;
+}
+
+.flight-booking-route small {
+  overflow-wrap: anywhere;
+}
+
+.flight-booking-arrival {
+  text-align: right;
+}
+
+.flight-booking-route-line {
+  align-items: center;
+  color: var(--booking-blue);
+}
+
+.flight-booking-route-line > span,
+.flight-booking-route-line small {
+  text-align: center;
+}
+
+.flight-booking-route-line i {
+  width: 100%;
+  border-top: 1px dashed #91a8b8;
+}
+
+.flight-booking-flight-meta,
+.flight-booking-review {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1.25rem 0 0;
+}
+
+.flight-booking-flight-meta dd,
+.flight-booking-review dd {
+  margin: 0.25rem 0 0;
+  overflow-wrap: anywhere;
+  font-size: 0.98rem;
+  font-weight: 700;
+}
+
+.flight-booking-payment {
+  padding: 1.25rem;
+  border: 1px solid #c9e0ef;
+  border-radius: 12px;
+  background: #eef6fb;
+}
+
+.flight-booking-payment h4 {
+  margin: 0 0 0.5rem;
+  color: var(--booking-navy);
+  font-size: 1.1rem;
+}
+
+.flight-booking-payment p {
+  margin: 0 0 0.75rem;
+  color: #637787;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.flight-booking-payment span {
+  color: var(--booking-blue);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.flight-booking-actions {
+  margin-top: auto;
+  padding-top: 1.5rem;
+}
+
+.flight-booking-actions button {
+  min-height: 48px;
+  padding: 0.75rem 1.1rem;
+  border: 1px solid #cfdae2;
+  border-radius: 8px;
+  background: #fff;
+  color: #3a5262;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.flight-booking-actions .flight-booking-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-color: var(--booking-blue);
+  background: var(--booking-blue);
+  color: #fff;
+}
+
+.flight-booking-actions button:disabled {
+  border-color: #a9bbc5;
+  background: #a9bbc5;
+  cursor: not-allowed;
+}
+
+.flight-booking-summary {
+  padding: 2rem 1.5rem;
+  border-left: 1px solid #e3eaf0;
+  background: #f1f7fa;
+}
+
+.flight-booking-summary h3 {
+  margin: 0 0 1rem;
+  color: var(--booking-navy);
+  font-size: 1.2rem;
+}
+
+.flight-booking-summary-route {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.flight-booking-summary-route i {
+  width: 30px;
+  border-top: 1px solid #8da1ae;
+}
+
+.flight-booking-summary > p {
+  margin: 0.5rem 0 1rem;
+  color: #71818d;
+  font-size: 0.9rem;
+}
+
+.flight-booking-summary-line {
+  margin: 0.8rem 0;
+  color: #5b6e7c;
+  font-size: 0.9rem;
+}
+
+.flight-booking-summary-line strong,
+.flight-booking-total strong {
+  color: #233d4f;
+  white-space: nowrap;
+}
+
+.flight-booking-total {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #dce5ea;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.flight-booking-summary small {
+  color: #6d7f8c;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.flight-booking-actions button:focus-visible,
+.flight-booking-steps button:focus-visible,
+.flight-booking-header button:focus-visible {
+  outline: 3px solid rgba(22, 133, 186, 0.35);
+  outline-offset: 2px;
+}
+
+.traveller-login-banner,
+.traveller-count,
+.traveller-card-header,
+.traveller-contact-fields,
+.traveller-gst {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.traveller-login-banner {
+  margin: 1.25rem 0;
+  padding: 1rem 1.2rem;
+  border-radius: 6px;
+  border-left: 4px solid var(--booking-blue);
+  background: #eaf4fa;
+  color: #233d4f;
+}
+
+.traveller-login-banner p {
+  flex: 1;
+  margin: 0;
+  font-size: 0.98rem;
+}
+
+.traveller-login-banner button,
+.traveller-add-button {
+  border: 0;
+  background: transparent;
+  color: var(--booking-blue);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.traveller-login-icon,
+.traveller-person-icon {
+  position: relative;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  border-radius: 50%;
+  background: #d7eaf4;
+}
+
+.traveller-login-icon::before,
+.traveller-person-icon::before {
+  position: absolute;
+  top: 4px;
+  left: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #42657a;
+  content: '';
+}
+
+.traveller-login-icon::after,
+.traveller-person-icon::after {
+  position: absolute;
+  bottom: 3px;
+  left: 5px;
+  width: 14px;
+  height: 8px;
+  border-radius: 8px 8px 5px 5px;
+  background: #42657a;
+  content: '';
+}
+
+.traveller-count {
+  justify-content: space-between;
+  margin: 1rem 0;
+  color: #233d4f;
+  font-size: 1rem;
+}
+
+.traveller-count > strong {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.traveller-person-icon {
+  width: 30px;
+  height: 30px;
+  flex-basis: 30px;
+}
+
+.traveller-person-icon::before {
+  top: 5px;
+  left: 11px;
+}
+
+.traveller-person-icon::after {
+  bottom: 4px;
+  left: 7px;
+  width: 16px;
+  height: 9px;
+}
+
+.traveller-count > span > span {
+  color: #85939d;
+}
+
+.traveller-warning {
+  margin-bottom: 0.8rem;
+  padding: 0.8rem;
+  border-radius: 4px;
+  background: #fff0d6;
+  color: #5a4831;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.traveller-step-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.traveller-empty,
+.traveller-card {
+  margin: 0;
+  border: 1px solid #e0e5e9;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.traveller-empty {
+  padding: 1rem;
+}
+
+.traveller-card {
+  min-width: 0;
+  padding: 0;
+  box-shadow: 0 3px 12px rgba(0, 29, 57, 0.08);
+}
+
+.traveller-card-header {
+  padding: 1rem;
+  border-bottom: 1px solid #e8edf0;
+  background: #f0f7fb;
+  color: var(--booking-navy);
+  font-size: 1rem;
+}
+
+.traveller-check {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 5px;
+  background: var(--booking-blue);
+  color: #fff;
+  font-weight: 700;
+}
+
+.traveller-card-header button {
+  margin-left: auto;
+  border: 0;
+  background: transparent;
+  color: var(--booking-blue);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.9rem;
+}
+
+.traveller-card-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.2fr;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.traveller-card-fields label,
+.traveller-contact-fields label,
+.traveller-date,
+.traveller-identity label {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.4rem;
+  color: #344c5c;
+  font-size: 0.92rem;
+}
+
+.traveller-card-fields input,
+.traveller-card-fields select,
+.traveller-contact-fields input,
+.traveller-contact-fields select {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid #cdd4da;
+  border-radius: 6px;
+  background: #fff;
+  color: #1a3040;
+  font: inherit;
+  font-size: 0.95rem;
+}
+
+.traveller-card-fields input:focus,
+.traveller-card-fields select:focus,
+.traveller-contact-fields input:focus,
+.traveller-contact-fields select:focus {
+  border-color: var(--booking-blue);
+  outline: 2px solid rgba(39, 130, 212, 0.18);
+}
+
+.traveller-gender {
+  display: flex;
+  min-height: 44px;
+  overflow: hidden;
+  border: 1px solid #cdd4da;
+  border-radius: 6px;
+}
+
+.traveller-gender label {
+  position: relative;
+  display: grid;
+  flex: 1;
+  place-items: center;
+  border-right: 1px solid #cdd4da;
+  cursor: pointer;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.traveller-gender label:last-child {
+  border-right: 0;
+}
+
+.traveller-gender label.selected {
+  background: #eaf4ff;
+  color: var(--booking-navy);
+}
+
+.traveller-gender input {
+  position: absolute;
+  opacity: 0;
+}
+
+.traveller-date > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.traveller-date select {
+  border-radius: 0;
+}
+
+.traveller-date label:first-child select {
+  border-radius: 6px 0 0 6px;
+}
+
+.traveller-date label:last-child select {
+  border-radius: 0 6px 6px 0;
+}
+
+.traveller-identity {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #e8edf0;
+}
+
+.traveller-identity h4,
+.traveller-identity p {
+  margin: 0;
+}
+
+.traveller-identity p {
+  color: #71818d;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.traveller-identity > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.traveller-add-button {
+  justify-self: start;
+  padding: 0.5rem 0;
+}
+
+.traveller-add-button:disabled {
+  color: #87949e;
+  cursor: default;
+}
+
+.traveller-error {
+  margin: 0;
+  color: #b42318;
+  font-size: 0.82rem;
+}
+
+.traveller-contact {
+  margin: 1rem -1.5rem 0;
+  padding: 1.5rem;
+  border-top: 1px solid #e3eaf0;
+}
+
+.traveller-contact h4 {
+  margin: 0 0 1rem;
+  color: var(--booking-navy);
+  font-size: 1.1rem;
+}
+
+.traveller-contact-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.traveller-contact-fields label {
+  align-items: stretch;
+  font-size: 0.92rem;
+}
+
+.traveller-gst {
+  flex-wrap: wrap;
+  margin: 0 -1.5rem -1.5rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e3eaf0;
+}
+
+.traveller-gst label {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #233d4f;
+  font-size: 0.95rem;
+}
+
+.traveller-gst label span {
+  color: #85939d;
+}
+
+.traveller-gst input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--booking-blue);
+}
+
+.traveller-gst > input {
+  min-height: 40px;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid #cdd4da;
+  border-radius: 6px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+@media (max-width: 700px) {
+  .flight-booking-backdrop {
+    align-items: end;
+    padding: 0;
+  }
+
+  .flight-booking-dialog {
+    max-height: 96vh;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .flight-booking-content {
+    grid-template-columns: 1fr;
+  }
+
+  .flight-booking-summary {
+    border-top: 1px solid #e3eaf0;
+    border-left: 0;
+  }
+
+  .traveller-contact-fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 450px) {
+  .flight-booking-header,
+  .flight-booking-main,
+  .flight-booking-summary {
+    padding: 1rem;
+  }
+
+  .flight-booking-steps {
+    justify-content: space-between;
+    padding: 0.75rem 0.5rem;
+  }
+
+  .flight-booking-steps button {
+    gap: 0.3rem;
+    flex-direction: column;
+    font-size: 0.7rem;
+  }
+
+  .flight-booking-route {
+    grid-template-columns: 1fr 55px 1fr;
+    gap: 0.4rem;
+    padding: 0.75rem;
+  }
+
+  .traveller-card-fields,
+  .traveller-identity > div {
+    grid-template-columns: 1fr;
+  }
+
+  .traveller-identity {
+    grid-column: auto;
+  }
+
+  .traveller-contact,
+  .traveller-gst {
+    margin-right: -1rem;
+    margin-left: -1rem;
+  }
+
+  .traveller-contact {
+    padding: 1rem;
+  }
+
+  .traveller-gst {
+    margin-bottom: -1rem;
+    padding: 1rem;
+  }
+}

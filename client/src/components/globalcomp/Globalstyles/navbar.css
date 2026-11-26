@@ -126,15 +126,12 @@
   background: #fff;
   transition: transform .25s, opacity .25s, background 0.3s ease;
 }
-
-/* Scrolled Header - Frosted light bar so logo and nav never overlap lower content */
+/* Scrolled Header - Keep the landing-page header transparent */
 .site-header.scrolled {
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(0, 29, 57, 0.08);
-  padding-bottom: 0.65rem;
-  box-shadow: 0 4px 20px rgba(0, 29, 57, 0.06);
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
 }
 .site-header.scrolled .navbar-logo {
   color: #001d39;

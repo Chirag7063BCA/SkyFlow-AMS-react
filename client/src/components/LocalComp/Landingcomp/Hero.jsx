@@ -1,61 +1,165 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import airportsData from '../../../dummydata/airports.json';
+import heroImage from '../../../assets/Hero.png';
 import './LandingStyles/hero.css';
 
-const getDateValue = (daysFromToday) => {
+const tripTypes = [
+  { value: 'oneWay', label: 'One Way' },
+  { value: 'roundTrip', label: 'Round Trip' },
+  { value: 'multiCity', label: 'Multi City' },
+];
+
+const travelClasses = ['Economy', 'Premium Economy', 'Business', 'First Class'];
+
+const dateFromToday = (daysAhead) => {
   const date = new Date();
-  date.setDate(date.getDate() + daysFromToday);
-
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-
-  return `${year}-${month}-${day}`;
+  date.setDate(date.getDate() + daysAhead);
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, '0'),
+    String(date.getDate()).padStart(2, '0'),
+  ].join('-');
 };
 
-export default function Hero({ onSearch }) {
-  const [tripType, setTripType] = useState('oneWay');
-  const [departureFrom, setDepartureFrom] = useState('');
-  const [goingTo, setGoingTo] = useState('');
-  const [departureDate, setDepartureDate] = useState(() => getDateValue(1));
-  const [returnDate, setReturnDate] = useState(() => getDateValue(7));
-  const travellersClass = 'Economy';
-  const [fareType, setFareType] = useState('regular');
-  const [nonStop, setNonStop] = useState(false);
-  const [resultsMsg, setResultsMsg] = useState('Please enter origin or destination city.');
+const formatAirport = (airport) =>
+  `${airport.city}, ${airport.country} (${airport.iata})`;
 
-  const handleSwap = () => {
-    setDepartureFrom(goingTo);
-    setGoingTo(departureFrom);
+function AirportField({
+  id,
+  label,
+  value,
+  isOpen,
+  suggestions,
+  onFocus,
+  onChange,
+  onSelect,
+}) {
+  return (
+    <div className="flight-field">
+      <label className="field-label" htmlFor={id}>
+        {label}
+      </label>
+      <input
+        id={id}
+        type="search"
+        className="field-control"
+        placeholder="City or airport"
+        autoComplete="off"
+        value={value}
+        onFocus={onFocus}
+        onChange={onChange}
+        aria-expanded={isOpen}
+        aria-controls={`${id}Dropdown`}
+      />
+      <div
+        id={`${id}Dropdown`}
+        className={`autocomplete-dropdown ${isOpen ? 'show' : ''}`}
+        role="listbox"
+      >
+        {isOpen &&
+          suggestions.map((airport) => (
+            <button
+              className="autocomplete-option"
+              type="button"
+              role="option"
+              aria-selected={value === formatAirport(airport)}
+              key={airport.iata}
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={() => onSelect(airport)}
+            >
+              <span className="autocomplete-option-badge">{airport.iata}</span>
+              <span className="autocomplete-option-info">
+                <span className="autocomplete-option-city">{airport.city}</span>
+                <span className="autocomplete-option-airport">{airport.name}</span>
+              </span>
+            </button>
+          ))}
+      </div>
+    </div>
+  );
+}
+
+export default function Hero() {
+  const navigate = useNavigate();
+  const [tripType, setTripType] = useState('oneWay');
+  const [from, setFrom] = useState('');
+  const [to, setTo] = useState('');
+  const [activeAirport, setActiveAirport] = useState(null);
+  const [departureDate, setDepartureDate] = useState(() => dateFromToday(1));
+  const [returnDate, setReturnDate] = useState(() => dateFromToday(2));
+  const [travellersClass, setTravellersClass] = useState('Economy');
+  const [isClassDropdownOpen, setIsClassDropdownOpen] = useState(false);
+  const [resultsMessage, setResultsMessage] = useState('');
+
+  const query = activeAirport === 'from' ? from : to;
+  const airportSuggestions = activeAirport
+    ? airportsData
+        .filter((airport) => {
+          const searchText =
+            `${airport.city} ${airport.name} ${airport.iata} ${airport.country}`.toLowerCase();
+          return searchText.includes(query.trim().toLowerCase());
+        })
+        .slice(0, 6)
+    : [];
+
+  const handleAirportChange = (field, value) => {
+    if (field === 'from') setFrom(value);
+    else setTo(value);
+    setResultsMessage('');
+  };
+
+  const handleAirportSelect = (field, airport) => {
+    const value = formatAirport(airport);
+    if (field === 'from') setFrom(value);
+    else setTo(value);
+    setActiveAirport(null);
   };
 
   const handleSearch = (event) => {
     event.preventDefault();
-    if (!departureFrom.trim() || !goingTo.trim()) {
-      setResultsMsg('Please enter origin or destination city.');
+    setActiveAirport(null);
+    setIsClassDropdownOpen(false);
+
+    if (!from.trim() || !to.trim()) {
+      setResultsMessage('Please enter your origin and destination city.');
       return;
     }
-    setResultsMsg('');
-    if (onSearch) {
-      onSearch({
-        tripType,
-        departureFrom,
-        goingTo,
-        departureDate,
-        returnDate,
-        travellersClass,
-        fareType,
-        nonStop,
-      });
-    }
+
+    setResultsMessage('');
+    navigate('/flights', {
+      state: {
+        search: {
+          tripType:
+            tripType === 'oneWay'
+              ? 'One Way'
+              : tripType === 'roundTrip'
+                ? 'Round Trip'
+                : 'Multi City',
+          from,
+          to,
+          departureDate,
+          returnDate: tripType === 'oneWay' ? null : returnDate,
+          travellers: 1,
+          cabinClass: travellersClass,
+          fareType: event.currentTarget.elements.fareType.value,
+          nonStop: event.currentTarget.elements.nonStop.checked,
+        },
+      },
+    });
   };
 
   return (
-    <section className="hero-section" id="hero">
+    <section
+      className="hero-section"
+      id="hero"
+      style={{ '--hero-image': `url("${heroImage}")` }}
+    >
       <div className="hero-content">
         <p className="hero-eyebrow">Fly Beyond Boundaries</p>
-        <h1 className="hero-title">
+        <h1 className="hero-title" aria-label="WHERE ADVENTURES TAKE FLIGHT">
           WHERE
-          <span className="animated-text-wrapper">
+          <span className="animated-text-wrapper" aria-hidden="true">
             <span className="animated-text hero-title-accent">JOURNEYS</span>
             <span className="animated-text hero-title-accent delay">ADVENTURES</span>
           </span>
@@ -68,79 +172,56 @@ export default function Hero({ onSearch }) {
         <form className="search-card" onSubmit={handleSearch}>
           <fieldset className="trip-type">
             <legend className="sr-only">Trip type</legend>
-            <label className={`trip-label ${tripType === 'oneWay' ? 'active' : ''}`}>
-              <input
-                type="radio"
-                name="tripType"
-                value="oneWay"
-                checked={tripType === 'oneWay'}
-                onChange={() => setTripType('oneWay')}
-              />
-              <span className="radio-dot"></span> One Way
-            </label>
-            <label className={`trip-label ${tripType === 'roundTrip' ? 'active' : ''}`}>
-              <input
-                type="radio"
-                name="tripType"
-                value="roundTrip"
-                checked={tripType === 'roundTrip'}
-                onChange={() => setTripType('roundTrip')}
-              />
-              <span className="radio-dot"></span> Round Trip
-            </label>
-            <label className={`trip-label ${tripType === 'multiCity' ? 'active' : ''}`}>
-              <input
-                type="radio"
-                name="tripType"
-                value="multiCity"
-                checked={tripType === 'multiCity'}
-                onChange={() => setTripType('multiCity')}
-              />
-              <span className="radio-dot"></span> Multi City
-            </label>
+            {tripTypes.map((trip) => (
+              <label className="trip-label" key={trip.value}>
+                <input
+                  type="radio"
+                  name="tripType"
+                  value={trip.value}
+                  checked={tripType === trip.value}
+                  onChange={() => setTripType(trip.value)}
+                />
+                <span className="radio-dot" />
+                {trip.label}
+              </label>
+            ))}
           </fieldset>
 
           <div className="fields-wrapper">
             <div className="fields-row">
-              <div className="flight-field">
-                <label className="field-label" htmlFor="departureFrom">
-                  Departure From
-                </label>
-                <input
-                  id="departureFrom"
-                  type="search"
-                  className="field-control"
-                  placeholder="City or airport"
-                  autoComplete="off"
-                  value={departureFrom}
-                  onChange={(e) => setDepartureFrom(e.target.value)}
-                />
-              </div>
-
+              <AirportField
+                id="departureFrom"
+                label="Departure From"
+                value={from}
+                isOpen={activeAirport === 'from'}
+                suggestions={airportSuggestions}
+                onFocus={() => setActiveAirport('from')}
+                onChange={(event) =>
+                  handleAirportChange('from', event.target.value)
+                }
+                onSelect={(airport) => handleAirportSelect('from', airport)}
+              />
               <button
                 className="swap-btn"
-                id="swapBtn"
                 type="button"
-                aria-label="Swap"
-                onClick={handleSwap}
+                aria-label="Swap departure and destination"
+                onClick={() => {
+                  setFrom(to);
+                  setTo(from);
+                }}
               >
                 &#8644;
               </button>
-
-              <div className="flight-field">
-                <label className="field-label" htmlFor="goingTo">
-                  Going To
-                </label>
-                <input
-                  id="goingTo"
-                  type="search"
-                  className="field-control"
-                  placeholder="City or airport"
-                  autoComplete="off"
-                  value={goingTo}
-                  onChange={(e) => setGoingTo(e.target.value)}
-                />
-              </div>
+              <AirportField
+                id="goingTo"
+                label="Going To"
+                value={to}
+                isOpen={activeAirport === 'to'}
+                suggestions={airportSuggestions}
+                onFocus={() => setActiveAirport('to')}
+                onChange={(event) => handleAirportChange('to', event.target.value)}
+                onSelect={(airport) => handleAirportSelect('to', airport)}
+              />
 
               <div className="flight-field">
                 <label className="field-label" htmlFor="departureDate">
@@ -151,16 +232,9 @@ export default function Hero({ onSearch }) {
                   type="date"
                   className="field-control"
                   value={departureDate}
-                  min={getDateValue(0)}
-                  onChange={(event) => {
-                    setDepartureDate(event.target.value);
-                    if (returnDate < event.target.value) {
-                      setReturnDate(event.target.value);
-                    }
-                  }}
+                  onChange={(event) => setDepartureDate(event.target.value)}
                 />
               </div>
-
               <div className="flight-field">
                 <label className="field-label" htmlFor="returnDate">
                   Return Date
@@ -170,15 +244,12 @@ export default function Hero({ onSearch }) {
                   type="date"
                   className="field-control"
                   value={returnDate}
-                  min={departureDate}
-                  disabled={tripType === 'oneWay'}
-                  onChange={(e) => setReturnDate(e.target.value)}
+                  onChange={(event) => setReturnDate(event.target.value)}
                 />
               </div>
-
               <div className="flight-field">
                 <label className="field-label" htmlFor="travellersClass">
-                  Travellers & Class
+                  Travellers &amp; Class
                 </label>
                 <input
                   id="travellersClass"
@@ -188,76 +259,75 @@ export default function Hero({ onSearch }) {
                   readOnly
                   placeholder="Select Class"
                   autoComplete="off"
-                  style={{ cursor: 'pointer' }}
+                  onClick={() => setIsClassDropdownOpen((open) => !open)}
+                  aria-expanded={isClassDropdownOpen}
+                  aria-controls="travellersClassDropdown"
                 />
+                <div
+                  id="travellersClassDropdown"
+                  className={`autocomplete-dropdown ${
+                    isClassDropdownOpen ? 'show' : ''
+                  }`}
+                  role="listbox"
+                >
+                  {isClassDropdownOpen &&
+                    travelClasses.map((travelClass) => (
+                      <button
+                        className="autocomplete-option"
+                        type="button"
+                        role="option"
+                        aria-selected={travellersClass === travelClass}
+                        key={travelClass}
+                        onClick={() => {
+                          setTravellersClass(travelClass);
+                          setIsClassDropdownOpen(false);
+                        }}
+                      >
+                        <span className="autocomplete-option-info">
+                          <span className="autocomplete-option-city">
+                            {travelClass}
+                          </span>
+                        </span>
+                      </button>
+                    ))}
+                </div>
               </div>
             </div>
-
-            <button className="search-btn" id="searchBtn" type="submit">
+            <button className="search-btn" type="submit">
               Search
             </button>
           </div>
 
-          <p className="results-msg" id="resultsMsg" aria-live="polite">
-            {resultsMsg}
+          <p className="results-msg" aria-live="polite">
+            {resultsMessage}
           </p>
 
           <div className="fares-row">
             <div className="fare-options">
-              <label className={`fare-label ${fareType === 'regular' ? 'active' : ''}`}>
-                <input
-                  type="radio"
-                  name="fareType"
-                  value="regular"
-                  checked={fareType === 'regular'}
-                  onChange={() => setFareType('regular')}
-                />
+              <label className="fare-label">
+                <input type="radio" name="fareType" value="regular" defaultChecked />
                 <span className="fare-title">Regular</span>
                 <span className="fare-desc">Regular Fares</span>
               </label>
-              <label className={`fare-label ${fareType === 'student' ? 'active' : ''}`}>
-                <input
-                  type="radio"
-                  name="fareType"
-                  value="student"
-                  checked={fareType === 'student'}
-                  onChange={() => setFareType('student')}
-                />
+              <label className="fare-label">
+                <input type="radio" name="fareType" value="student" />
                 <span className="fare-title">Student</span>
                 <span className="fare-desc">Extra Baggage</span>
               </label>
-              <label className={`fare-label ${fareType === 'armed' ? 'active' : ''}`}>
-                <input
-                  type="radio"
-                  name="fareType"
-                  value="armed"
-                  checked={fareType === 'armed'}
-                  onChange={() => setFareType('armed')}
-                />
+              <label className="fare-label">
+                <input type="radio" name="fareType" value="armed" />
                 <span className="fare-title">Armed Forces</span>
                 <span className="fare-desc">Extra Discount</span>
               </label>
-              <label className={`fare-label ${fareType === 'senior' ? 'active' : ''}`}>
-                <input
-                  type="radio"
-                  name="fareType"
-                  value="senior"
-                  checked={fareType === 'senior'}
-                  onChange={() => setFareType('senior')}
-                />
+              <label className="fare-label">
+                <input type="radio" name="fareType" value="senior" />
                 <span className="fare-title">Senior Citizen</span>
                 <span className="fare-desc">Extra Discount</span>
               </label>
             </div>
-
             <label className="nonstop-label">
-              <input
-                type="checkbox"
-                id="nonStop"
-                checked={nonStop}
-                onChange={(e) => setNonStop(e.target.checked)}
-              />
-              <span className="custom-checkbox"></span>
+              <input type="checkbox" name="nonStop" />
+              <span className="custom-checkbox" />
               <span className="nonstop-text-wrapper">
                 <span className="nonstop-title">Non-Stop</span>
                 <span className="fare-desc">Direct Flights</span>

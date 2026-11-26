@@ -9,6 +9,11 @@ const tripTypes = [
     description: 'Single directional flight',
     icon: '➡',
   },
+  {
+    label: 'Multi City',
+    description: 'Add another city to your trip',
+    icon: '✈',
+  },
 ];
 
 export default function FlightTripTypeField({

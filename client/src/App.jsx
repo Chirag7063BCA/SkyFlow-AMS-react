@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import AdminPage from './Pages/AdminPage';
 import FlightsPage from './Pages/FlightsPage';
 import HelpPage from './Pages/HelpPage';
@@ -10,16 +11,18 @@ import AppLayout from './components/globalcomp/AppLayout';
 export default function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route element={<AppLayout />}>
-          <Route index element={<LandingPage />} />
-          <Route path="flights" element={<FlightsPage />} />
-          <Route path="track" element={<TrackFlightPage />} />
-          <Route path="help" element={<HelpPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Route>
-        <Route path="/admin/*" element={<AdminPage />} />
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route element={<AppLayout />}>
+            <Route index element={<LandingPage />} />
+            <Route path="flights" element={<FlightsPage />} />
+            <Route path="track" element={<TrackFlightPage />} />
+            <Route path="help" element={<HelpPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Route>
+          <Route path="/admin/*" element={<AdminPage />} />
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

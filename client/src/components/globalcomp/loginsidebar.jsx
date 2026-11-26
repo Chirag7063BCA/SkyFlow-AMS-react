@@ -1,20 +1,17 @@
 import { useState, useEffect } from 'react';
 import './Globalstyles/signup.css';
 import AdminPinModal from './AdminPinModal';
+import { loginUser, registerUser, syncGoogleUser } from '../../services/authApi';
+import { useAuth } from '../../context/useAuth';
 
-export default function LoginSidebar({
-  isOpen,
-  onClose,
-  defaultTab = 'signin',
-  onLoginSuccess,
-  onAdminAccess
-}) {
+export default function LoginSidebar({ onAdminAccess } = {}) {
+  const { isAuthOpen: isOpen, closeAuth: onClose, authDefaultTab: defaultTab, handleLoginSuccess: onLoginSuccess } = useAuth();
+
   const [activeTab, setActiveTab] = useState(defaultTab);
   const [prevOpen, setPrevOpen] = useState(isOpen);
   const [authError, setAuthError] = useState('');
   const [showAdminPin, setShowAdminPin] = useState(false);
-  const [showGoogleConfig, setShowGoogleConfig] = useState(false);
-  const [googleClientIdInput, setGoogleClientIdInput] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -51,8 +48,6 @@ export default function LoginSidebar({
       if (e.key === 'Escape') {
         if (showAdminPin) {
           setShowAdminPin(false);
-        } else if (showGoogleConfig) {
-          setShowGoogleConfig(false);
         } else {
           onClose();
         }
@@ -60,7 +55,7 @@ export default function LoginSidebar({
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, showAdminPin, showGoogleConfig, onClose]);
+  }, [isOpen, showAdminPin, onClose]);
 
   if (!isOpen) return null;
 
@@ -108,11 +103,13 @@ export default function LoginSidebar({
             if (!res.ok) throw new Error('Failed to retrieve Google profile');
             const profile = await res.json();
             if (profile.email) {
-              saveAndClose({
+              const googleUserData = {
                 name: profile.name || profile.email.split('@')[0],
                 email: profile.email,
                 picture: profile.picture || ''
-              });
+              };
+              const syncRes = await syncGoogleUser(googleUserData);
+              saveAndClose(syncRes.user || googleUserData);
             } else {
               setAuthError('Google account did not provide a valid email.');
             }
@@ -129,28 +126,15 @@ export default function LoginSidebar({
   };
 
   const handleGoogleClick = () => {
-    const activeClientId =
-      import.meta.env.VITE_GOOGLE_CLIENT_ID?.trim() ||
-      localStorage.getItem('skyflow_google_client_id')?.trim();
-
+    const activeClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID?.trim();
     if (!activeClientId) {
-      setShowGoogleConfig(true);
+      setAuthError('Google Client ID not configured. Please check your .env file.');
       return;
     }
-
     triggerGoogleSignIn(activeClientId);
   };
 
-  const handleSaveGoogleConfig = (e) => {
-    e.preventDefault();
-    const cleanId = googleClientIdInput.trim();
-    if (!cleanId) return;
-    localStorage.setItem('skyflow_google_client_id', cleanId);
-    setShowGoogleConfig(false);
-    triggerGoogleSignIn(cleanId);
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setAuthError('');
 
@@ -170,43 +154,35 @@ export default function LoginSidebar({
       localStorage.removeItem('skyflow_remember');
     }
 
-    let accounts = [];
+    setIsSubmitting(true);
+
     try {
-      accounts = JSON.parse(localStorage.getItem('skyflow_accounts') || '[]');
-    } catch {
-      accounts = [];
-    }
+      if (activeTab === 'signin') {
+        const result = await loginUser(email, password);
+        if (!result.success) {
+          setAuthError(result.message);
+          return;
+        }
+        saveAndClose(result.user);
+      } else {
+        if (!fullName.trim()) {
+          setAuthError('Please enter your full name.');
+          return;
+        }
+        if (password !== confirmPassword) {
+          setAuthError('Passwords do not match! Please check and try again.');
+          return;
+        }
 
-    if (activeTab === 'signin') {
-      const matched = accounts.find((acc) => acc.email.toLowerCase() === email);
-      if (!matched) {
-        setAuthError('No account found with this email. Please Sign Up or Continue with Google.');
-        return;
+        const result = await registerUser(fullName.trim(), email, password);
+        if (!result.success) {
+          setAuthError(result.message);
+          return;
+        }
+        saveAndClose(result.user);
       }
-      if (matched.password !== password) {
-        setAuthError('Incorrect password! Please try again.');
-        return;
-      }
-      saveAndClose({ name: matched.name, email: matched.email });
-    } else {
-      if (!fullName.trim()) {
-        setAuthError('Please enter your full name.');
-        return;
-      }
-      if (password !== confirmPassword) {
-        setAuthError('Passwords do not match! Please check and try again.');
-        return;
-      }
-
-      const existingIndex = accounts.findIndex((acc) => acc.email.toLowerCase() === email);
-      if (existingIndex !== -1) {
-        setAuthError('An account with this email already exists. Please Sign In.');
-        return;
-      }
-
-      accounts.push({ name: fullName.trim(), email, password });
-      localStorage.setItem('skyflow_accounts', JSON.stringify(accounts));
-      saveAndClose({ name: fullName.trim(), email });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -332,8 +308,14 @@ export default function LoginSidebar({
             </div>
           )}
 
-          <button type="submit" className="submit-btn">
-            {isSignIn ? 'Sign In' : 'Create Account'}
+          <button type="submit" className="submit-btn" disabled={isSubmitting}>
+            {isSubmitting
+              ? isSignIn
+                ? 'Signing In...'
+                : 'Creating Account...'
+              : isSignIn
+                ? 'Sign In'
+                : 'Create Account'}
           </button>
         </form>
 
@@ -400,41 +382,6 @@ export default function LoginSidebar({
           </button>
         </div>
       </div>
-
-      {showGoogleConfig && (
-        <div className="admin-pin-modal-overlay" onClick={() => setShowGoogleConfig(false)}>
-          <div className="admin-pin-modal" onClick={(e) => e.stopPropagation()}>
-            <h3>Google Sign-In Setup</h3>
-            <p>
-              To authenticate with real Google accounts, enter your OAuth 2.0 Web Client ID from Google Cloud Console.
-            </p>
-            <form onSubmit={handleSaveGoogleConfig}>
-              <input
-                type="text"
-                className="admin-pin-input"
-                style={{ fontSize: '0.85rem', letterSpacing: 'normal', textAlign: 'left', wordBreak: 'break-all' }}
-                placeholder="xxxx.apps.googleusercontent.com"
-                value={googleClientIdInput}
-                onChange={(e) => setGoogleClientIdInput(e.target.value)}
-                required
-                autoFocus
-              />
-              <div className="admin-pin-actions" style={{ marginTop: '1rem' }}>
-                <button
-                  type="button"
-                  className="admin-pin-cancel"
-                  onClick={() => setShowGoogleConfig(false)}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="admin-pin-confirm">
-                  Save & Connect
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       <AdminPinModal
         isOpen={showAdminPin}

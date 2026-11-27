@@ -1,5 +1,9 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import logo from '../../../assets/navbar logo.gif';
+import winterEscapeOffer from '../../../assets/highlights/winter_escape_offer.jpg';
+import luxuryHotelOffer from '../../../assets/highlights/luxury_hotel_offer.jpg';
+import loungeAccessOffer from '../../../assets/highlights/lounge_access_offer.jpg';
+import carRentalOffer from '../../../assets/highlights/car_rental_offer.jpg';
 import FlightBP from './FlightBookingProcessComp/FlightBP';
 import './FlightsStyles/FlightResults.css';
 
@@ -17,6 +21,132 @@ const stopOptions = [
   { value: '1', label: '1 Stop' },
   { value: '2', label: '2+ Stops' },
 ];
+
+const spotlightSlots = [
+  {
+    id: 'flight-deals',
+    label: 'Flight and lounge promotions',
+    intervalMs: 2000,
+    slides: [
+      {
+        id: 'winter-escape',
+        image: winterEscapeOffer,
+        alt: 'Snow-capped alpine resort and aircraft wing at golden hour',
+        badge: 'Sponsored · Flight Deal',
+        title: 'Winter Escape — Up to 35% Off',
+        description:
+          'Save on seasonal alpine and international routes booked with SkyFlow.',
+        cta: 'Limited Offer',
+      },
+      {
+        id: 'lounge-card',
+        image: loungeAccessOffer,
+        alt: 'Executive airport VIP lounge overlooking aircraft on the tarmac',
+        badge: 'Sponsored · Travel Perks',
+        title: 'SkyFlow Priority Lounge Access',
+        description:
+          'Unlock complimentary airport lounge passes and fast-track boarding.',
+        cta: 'Member Perk',
+      },
+    ],
+  },
+  {
+    id: 'travel-partners',
+    label: 'Partner hotel and car rental offers',
+    intervalMs: 2000,
+    slides: [
+      {
+        id: 'luxury-hotel',
+        image: luxuryHotelOffer,
+        alt: 'Twilight infinity pool at an oceanfront luxury resort',
+        badge: 'Sponsored · Hotel Partner',
+        title: 'Oceanfront Stays — Save 20%',
+        description:
+          'Bundle curated coastal resorts with your flight for exclusive rates.',
+        cta: 'Partner Deal',
+      },
+      {
+        id: 'car-rental',
+        image: carRentalOffer,
+        alt: 'Convertible sedan driving along a Mediterranean cliffside highway',
+        badge: 'Sponsored · Car Rental',
+        title: 'Zero-Fee Airport Car Pickups',
+        description:
+          'Drive straight from arrivals with flexible mileage and instant booking.',
+        cta: 'Partner Offer',
+      },
+    ],
+  },
+];
+
+function SpotlightCarousel({ slides, intervalMs, label }) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    if (isPaused || slides.length <= 1) return undefined;
+
+    const timer = window.setInterval(() => {
+      setActiveIndex((current) => (current + 1) % slides.length);
+    }, intervalMs);
+
+    return () => window.clearInterval(timer);
+  }, [slides.length, intervalMs, isPaused]);
+
+  return (
+    <section
+      className="flight-spotlight-card"
+      aria-label={label}
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onFocus={() => setIsPaused(true)}
+      onBlur={() => setIsPaused(false)}
+    >
+      <div className="flight-spotlight-carousel">
+        {slides.map((slide, index) => {
+          const isActive = index === activeIndex;
+          return (
+            <div
+              key={slide.id}
+              className={`flight-spotlight-slide ${isActive ? 'is-active' : ''}`}
+              aria-hidden={!isActive}
+            >
+              <img
+                src={slide.image}
+                alt={slide.alt}
+                className="flight-spotlight-image"
+              />
+              <div className="flight-spotlight-overlay">
+                <span className="flight-spotlight-badge">{slide.badge}</span>
+                <div className="flight-spotlight-body">
+                  <h4>{slide.title}</h4>
+                  <p>{slide.description}</p>
+                </div>
+                <span className="flight-spotlight-cta">{slide.cta}</span>
+              </div>
+            </div>
+          );
+        })}
+
+        {slides.length > 1 && (
+          <div className="flight-spotlight-dots" role="tablist" aria-label={`${label} slides`}>
+            {slides.map((slide, index) => (
+              <button
+                key={slide.id}
+                type="button"
+                role="tab"
+                aria-selected={index === activeIndex}
+                aria-label={`Show ${slide.title}`}
+                className={`flight-spotlight-dot ${index === activeIndex ? 'is-active' : ''}`}
+                onClick={() => setActiveIndex(index)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
 
 const parseFare = (fare) => {
   if (typeof fare === 'number') return fare;
@@ -114,7 +244,7 @@ function FlightCard({ flight, index, currency, search }) {
   );
 }
 
-export default function FlightResults({ flights = [], search }) {
+export default function FlightResults({ flights = [], search, adContent = null }) {
   const [currencyCode, setCurrencyCode] = useState('USD');
   const [maxPrice, setMaxPrice] = useState(5000);
   const [selectedStops, setSelectedStops] = useState([]);
@@ -257,6 +387,23 @@ export default function FlightResults({ flights = [], search }) {
                   No flights match your search criteria. Try searching for
                   different cities or codes.
                 </p>
+              </div>
+            )}
+
+            {!hasSearch && (
+              <div
+                className="flight-spotlight-stack"
+                aria-label="Featured promotions and partner offers"
+              >
+                {adContent ??
+                  spotlightSlots.map((slot) => (
+                    <SpotlightCarousel
+                      key={slot.id}
+                      slides={slot.slides}
+                      intervalMs={slot.intervalMs}
+                      label={slot.label}
+                    />
+                  ))}
               </div>
             )}
           </div>

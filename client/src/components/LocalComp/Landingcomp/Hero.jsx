@@ -90,7 +90,9 @@ export default function Hero() {
   const [returnDate, setReturnDate] = useState(() => dateFromToday(2));
   const [travellersClass, setTravellersClass] = useState('Economy');
   const [isClassDropdownOpen, setIsClassDropdownOpen] = useState(false);
-  const [resultsMessage, setResultsMessage] = useState('');
+  const [resultsMessage, setResultsMessage] = useState(
+    'Please enter origin or destination city.',
+  );
 
   const query = activeAirport === 'from' ? from : to;
   const airportSuggestions = activeAirport
@@ -122,7 +124,7 @@ export default function Hero() {
     setIsClassDropdownOpen(false);
 
     if (!from.trim() || !to.trim()) {
-      setResultsMessage('Please enter your origin and destination city.');
+      setResultsMessage('Please enter origin or destination city.');
       return;
     }
 

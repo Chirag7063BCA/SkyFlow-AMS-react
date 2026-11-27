@@ -1,31 +1,28 @@
 .admin-login {
   display: grid;
+  width: 100%;
   min-height: 100vh;
-  padding: clamp(20px, 5vw, 72px);
-  place-items: center;
-  background:
-    radial-gradient(ellipse at 12% 18%, rgba(223, 225, 228, 0.8), transparent 34%),
-    #f0f1f3;
+  min-height: 100svh;
+  padding: 0;
+  place-items: stretch;
+  background: #101523;
 }
 
 .admin-login__card {
   display: grid;
-  grid-template-columns: minmax(0, 0.94fr) minmax(430px, 1.06fr);
-  width: min(1120px, 100%);
-  min-height: min(690px, calc(100vh - 80px));
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
+  grid-template-columns: minmax(0, 0.96fr) minmax(0, 1.04fr);
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.76);
-  border-radius: 30px;
-  background: #fff;
-  box-shadow:
-    0 34px 90px rgba(29, 34, 43, 0.1),
-    0 4px 16px rgba(29, 34, 43, 0.04);
+  background: #f2efe9;
 }
 
 .admin-showcase {
   position: relative;
   display: flex;
-  min-height: 650px;
+  min-height: 100vh;
+  min-height: 100svh;
   flex-direction: column;
   justify-content: space-between;
   overflow: hidden;
@@ -232,7 +229,11 @@
   display: flex;
   min-width: 0;
   flex-direction: column;
-  padding: 30px clamp(32px, 5.3vw, 68px) 25px;
+  padding: clamp(24px, 4vh, 42px) clamp(30px, 6vw, 96px);
+  background:
+    radial-gradient(ellipse at 98% 4%, rgba(229, 139, 111, 0.16), transparent 31%),
+    radial-gradient(ellipse at 0% 100%, rgba(121, 160, 163, 0.1), transparent 34%),
+    linear-gradient(145deg, #f8f6f1, #edeae3);
 }
 
 .admin-login__header {
@@ -436,17 +437,13 @@
 }
 
 @media (max-width: 860px) {
-  .admin-login {
-    padding: 24px;
-  }
-
   .admin-login__card {
-    grid-template-columns: minmax(240px, 0.78fr) minmax(360px, 1fr);
-    min-height: 640px;
+    grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
   }
 
   .admin-showcase {
-    min-height: 640px;
+    min-height: 100vh;
+    min-height: 100svh;
     padding: 30px 26px 26px;
   }
 
@@ -456,26 +453,23 @@
   }
 
   .admin-login__content {
-    padding-right: 32px;
-    padding-left: 32px;
+    padding-right: clamp(24px, 4vw, 42px);
+    padding-left: clamp(24px, 4vw, 42px);
   }
 }
 
 @media (max-width: 640px) {
-  .admin-login {
-    padding: 14px;
-  }
-
   .admin-login__card {
     display: flex;
-    width: min(460px, 100%);
-    min-height: auto;
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100svh;
     flex-direction: column;
-    border-radius: 22px;
   }
 
   .admin-showcase {
-    min-height: 190px;
+    min-height: 210px;
+    flex: 0 0 210px;
     padding: 22px 24px 20px;
   }
 
@@ -506,7 +500,9 @@
   }
 
   .admin-login__content {
-    padding: 20px 25px 20px;
+    min-height: 510px;
+    flex: 1 0 auto;
+    padding: 20px 25px 22px;
   }
 
   .admin-login__body {

@@ -1,6 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import airportsData from '../../../dummydata/airports.json';
+import {
+  getAirports,
+  getAirportsSync,
+} from '../../../services/flightApi';
 import heroImage from '../../../assets/Hero.png';
 import './LandingStyles/hero.css';
 
@@ -82,6 +85,7 @@ function AirportField({
 
 export default function Hero() {
   const navigate = useNavigate();
+  const [airports, setAirports] = useState(() => getAirportsSync());
   const [tripType, setTripType] = useState('oneWay');
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
@@ -92,12 +96,26 @@ export default function Hero() {
   const [isClassDropdownOpen, setIsClassDropdownOpen] = useState(false);
   const [resultsMessage, setResultsMessage] = useState('');
 
+  useEffect(() => {
+    let isMounted = true;
+    getAirports().then((data) => {
+      if (isMounted && Array.isArray(data)) {
+        setAirports(data);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const query = activeAirport === 'from' ? from : to;
   const airportSuggestions = activeAirport
-    ? airportsData
+    ? airports
         .filter((airport) => {
-          const searchText =
-            `${airport.city} ${airport.name} ${airport.iata} ${airport.country}`.toLowerCase();
+          const searchText = (
+            `${airport.city} ${airport.name} ` +
+            `${airport.iata} ${airport.country}`
+          ).toLowerCase();
           return searchText.includes(query.trim().toLowerCase());
         })
         .slice(0, 6)
@@ -166,7 +184,8 @@ export default function Hero() {
           TAKE FLIGHT
         </h1>
         <p className="hero-copy">
-          Discover seamless travel experiences, curated for comfort, speed, and style.
+          Discover seamless travel experiences, curated for comfort,
+          speed, and style.
         </p>
 
         <form className="search-card" onSubmit={handleSearch}>

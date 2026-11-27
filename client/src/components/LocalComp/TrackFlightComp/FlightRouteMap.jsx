@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import airportsData from '../../../dummydata/airports.json';
+import { findAirportSync } from '../../../services/flightApi';
 import { evaluateAirborneFlight } from './flightScanner';
 
 // Calculate straight-line distance (km) between two airports using Haversine formula
@@ -21,7 +21,7 @@ function getDistanceKm(airportA, airportB) {
   return Math.round(earthRadiusKm * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
 }
 
-// Create 101 points (0% to 100%) along a curved flight arc from origin to destination
+// Create 101 points (0% to 100%) along curved flight arc
 function buildArcPoints(origin, destination) {
   const lat1 = origin.latitude;
   const lon1 = origin.longitude;
@@ -53,13 +53,9 @@ export default function FlightRouteMap({ flight, liveNow }) {
   const routeLayerRef = useRef(null);
   const lastRouteRef = useRef('');
 
-  // Find origin & destination coordinates from airports.json
-  const origin = airportsData.find(
-    (airport) => airport.iata === flight?.fromAirportCode,
-  );
-  const destination = airportsData.find(
-    (airport) => airport.iata === flight?.toAirportCode,
-  );
+  // Find origin & destination coordinates from flightApi service
+  const origin = findAirportSync(flight?.fromAirportCode);
+  const destination = findAirportSync(flight?.toAirportCode);
 
   // Calculate live progress (0% to 100%)
   const liveFlight = evaluateAirborneFlight(flight, liveNow);
@@ -93,7 +89,8 @@ export default function FlightRouteMap({ flight, liveNow }) {
       if (usedFallback) return;
       usedFallback = true;
       googleTiles.setUrl(
-        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+        'https://server.arcgisonline.com/ArcGIS/rest/services/' +
+        'World_Street_Map/MapServer/tile/{z}/{y}/{x}',
       );
     });
 
@@ -117,11 +114,14 @@ export default function FlightRouteMap({ flight, liveNow }) {
 
     const arcPoints = buildArcPoints(origin, destination);
 
-    // Zoom map to fit route when first loading or when switching to a different route
+    // Zoom map to fit route when first loading or switching routes
     const routeKey = `${origin.iata}-${destination.iata}`;
     if (!map._loaded || lastRouteRef.current !== routeKey) {
       map.invalidateSize();
-      map.fitBounds(L.latLngBounds(arcPoints), { padding: [48, 48], animate: false });
+      map.fitBounds(L.latLngBounds(arcPoints), {
+        padding: [48, 48],
+        animate: false,
+      });
       lastRouteRef.current = routeKey;
     }
 
@@ -156,14 +156,20 @@ export default function FlightRouteMap({ flight, liveNow }) {
     // Origin & Destination IATA pins
     const originPin = L.divIcon({
       className: 'gmap-airport-marker',
-      html: `<div class="gmap-pin gmap-pin-origin"><span class="gmap-pin-dot"></span><span class="gmap-pin-label">${origin.iata}</span></div>`,
+      html:
+        '<div class="gmap-pin gmap-pin-origin">' +
+        '<span class="gmap-pin-dot"></span>' +
+        `<span class="gmap-pin-label">${origin.iata}</span></div>`,
       iconSize: [60, 28],
       iconAnchor: [10, 14],
     });
 
     const destPin = L.divIcon({
       className: 'gmap-airport-marker',
-      html: `<div class="gmap-pin gmap-pin-dest"><span class="gmap-pin-dot"></span><span class="gmap-pin-label">${destination.iata}</span></div>`,
+      html:
+        '<div class="gmap-pin gmap-pin-dest">' +
+        '<span class="gmap-pin-dot"></span>' +
+        `<span class="gmap-pin-label">${destination.iata}</span></div>`,
       iconSize: [60, 28],
       iconAnchor: [10, 14],
     });
@@ -186,22 +192,27 @@ export default function FlightRouteMap({ flight, liveNow }) {
     const p2 = map.latLngToLayerPoint(progressPercent < 100 ? nextPos : currentPos);
     const angleDeg = (Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180) / Math.PI + 90;
 
-    // Animated commercial jetliner symbol rotated along flight path
+    const rot = angleDeg.toFixed(1);
     const jetIcon = L.divIcon({
       className: 'gmap-plane-marker',
       html: `
         <div class="gmap-jet-wrap">
           <span class="gmap-jet-pulse"></span>
-          <svg class="gmap-jet-svg" style="transform: rotate(${angleDeg.toFixed(1)}deg)" width="38" height="38" viewBox="0 0 64 64" aria-hidden="true">
+          <svg class="gmap-jet-svg" style="transform: rotate(${rot}deg)"
+               width="38" height="38" viewBox="0 0 64 64" aria-hidden="true">
             <path
-              d="M32 4 C34.2 4 35.6 7.5 35.8 14 L36 24 L57 37.5 L57 42.5 L36 35.5 L35.5 49 L43.5 54.5 L43.5 58 L32 55 L20.5 58 L20.5 54.5 L28.5 49 L28 35.5 L7 42.5 L7 37.5 L28 24 L28.2 14 C28.4 7.5 29.8 4 32 4 Z"
+              d="M32 4 C34.2 4 35.6 7.5 35.8 14 L36 24 L57 37.5 L57 42.5
+                 L36 35.5 L35.5 49 L43.5 54.5 L43.5 58 L32 55 L20.5 58
+                 L20.5 54.5 L28.5 49 L28 35.5 L7 42.5 L7 37.5 L28 24
+                 L28.2 14 C28.4 7.5 29.8 4 32 4 Z"
               fill="#facc15"
               stroke="#0f172a"
               stroke-width="2.2"
               stroke-linejoin="round"
             />
             <path
-              d="M32 8 C33.1 8 33.8 10.5 33.9 15 L34 25 L32 24 L30 25 L30.1 15 C30.2 10.5 30.9 8 32 8 Z"
+              d="M32 8 C33.1 8 33.8 10.5 33.9 15 L34 25 L32 24 L30 25
+                 L30.1 15 C30.2 10.5 30.9 8 32 8 Z"
               fill="#fef08a"
             />
           </svg>
@@ -237,8 +248,9 @@ export default function FlightRouteMap({ flight, liveNow }) {
             className={`gmap-live-dot${liveFlight.isAirborne ? ' is-airborne' : ''}`}
             aria-hidden="true"
           ></span>
-          {liveFlight.isAirborne ? 'IN SKY NOW' : 'ROUTE'} &middot; {origin.iata} &rarr;{' '}
-          {destination.iata} &middot; {distanceKm.toLocaleString()} km
+          {liveFlight.isAirborne ? 'IN SKY NOW' : 'ROUTE'} &middot;{' '}
+          {origin.iata} &rarr; {destination.iata} &middot;{' '}
+          {distanceKm.toLocaleString()} km
         </span>
 
         <span className="gmap-pill-badge">Live @ {lastSyncedLabel}</span>

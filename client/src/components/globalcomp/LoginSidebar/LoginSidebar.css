@@ -1,0 +1,217 @@
+/* SkyFlow AMS - Auth Drawer Stylesheet */
+.signup-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+}
+
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 29, 57, 0.6);
+  backdrop-filter: blur(6px);
+  animation: fadeInOverlay 0.2s ease-out;
+}
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.drawer-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  max-width: 440px;
+  height: 100vh;
+  background: #ffffff;
+  color: #0f172a;
+  padding: 2.5rem 2rem;
+  box-shadow: -12px 0 35px rgba(0, 29, 57, 0.18);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  z-index: 100001;
+  animation: slideInRight 0.25s ease-out forwards;
+}
+
+.drawer-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.8rem;
+  padding-bottom: 1.2rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+.drawer-brand-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.drawer-header h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #001d39;
+  letter-spacing: -0.02em;
+}
+.drawer-subtitle {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.close-btn {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  font-size: 1.3rem;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+.close-btn:hover {
+  background: #fee2e2;
+  color: #dc2626;
+  border-color: #fca5a5;
+}
+
+.auth-error-banner {
+  padding: 0.65rem 0.9rem;
+  margin-bottom: 1.2rem;
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  border-radius: 9px;
+  color: #dc2626;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.form-group label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #001d39;
+}
+.form-group input {
+  padding: 0.72rem 0.95rem;
+  background: #f8fafc;
+  border: 1.5px solid #dbeafe;
+  border-radius: 9px;
+  font-size: 0.92rem;
+  color: #001d39;
+  outline: none;
+  transition: all 0.2s ease;
+}
+.form-group input:focus {
+  background: #fff;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.submit-btn,
+.google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.8rem;
+  border-radius: 9px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.submit-btn {
+  margin-top: 0.4rem;
+  background: linear-gradient(135deg, #0a4174 0%, #2563eb 100%);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+}
+.submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+}
+.submit-btn:disabled {
+  opacity: 0.85;
+  cursor: not-allowed;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 1.4rem 0 1.1rem;
+  color: #94a3b8;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e2e8f0;
+}
+.divider span { padding: 0 0.8rem; }
+
+.google-btn {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  color: #1e293b;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+.google-btn:hover:not(:disabled) {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.07);
+}
+
+.footer-text {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.88rem;
+  color: #64748b;
+}
+.footer-text button {
+  color: #2563eb;
+  font-weight: 700;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: inherit;
+  transition: color 0.15s;
+}
+.footer-text button:hover {
+  color: #0a4174;
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .drawer-panel { max-width: 100%; padding: 1.6rem 1.25rem; }
+}

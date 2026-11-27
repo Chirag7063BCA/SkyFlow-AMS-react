@@ -1,12 +1,47 @@
 import { useEffect, useRef, useState } from 'react';
 import heroImage from '../../../assets/Hero.png';
 import FlightAirportField from './FlightHeaderParts/FlightAirportField';
-import FlightCabinField from './FlightHeaderParts/FlightCabinField';
 import FlightDateField from './FlightHeaderParts/FlightDateField';
 import FlightFareOptions from './FlightHeaderParts/FlightFareOptions';
+import FlightSelectField from './FlightHeaderParts/FlightSelectField';
 import FlightTravellersField from './FlightHeaderParts/FlightTravellersField';
-import FlightTripTypeField from './FlightHeaderParts/FlightTripTypeField';
 import './FlightsStyles/FlightHeader.css';
+
+const TRIP_TYPES = [
+  {
+    label: 'Round Trip',
+    description: 'Return flight included',
+    icon: '🔁',
+  },
+  {
+    label: 'One Way',
+    description: 'Single directional flight',
+    icon: '➡',
+  },
+  {
+    label: 'Multi City',
+    description: 'Add another city to your trip',
+    icon: '✈',
+  },
+];
+
+const CABIN_OPTIONS = [
+  {
+    label: 'Economy / Premium',
+    description: 'Standard and extra legroom seats',
+    icon: '✦',
+  },
+  {
+    label: 'Business Class',
+    description: 'Lie-flat seats and lounge access',
+    icon: '✦',
+  },
+  {
+    label: 'First Class',
+    description: 'Private suite and premium service',
+    icon: '✦',
+  },
+];
 
 const startOfDay = (date) =>
   new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -26,7 +61,9 @@ const parseSearchDate = (value, fallback) => {
 };
 
 const normalizeCabinClass = (value) => {
-  if (value === 'Business' || value === 'Business Class') return 'Business Class';
+  if (value === 'Business' || value === 'Business Class') {
+    return 'Business Class';
+  }
   if (value === 'First Class') return 'First Class';
   return 'Economy / Premium';
 };
@@ -117,8 +154,11 @@ export default function FlightHeader({
     >
       <form className="fsb-container" ref={formRef} onSubmit={handleSubmit}>
         <div className="fsb-cards-row">
-          <FlightTripTypeField
+          <FlightSelectField
+            label="Trip type"
+            heading="Select trip type"
             value={tripType}
+            options={TRIP_TYPES}
             isOpen={openMenu === 'trip'}
             onToggle={() => toggleMenu('trip')}
             onChange={handleTripTypeChange}
@@ -192,8 +232,11 @@ export default function FlightHeader({
             }}
           />
 
-          <FlightCabinField
+          <FlightSelectField
+            label="Cabin class"
+            heading="Select cabin class"
             value={cabinClass}
+            options={CABIN_OPTIONS}
             isOpen={openMenu === 'cabin'}
             onToggle={() => toggleMenu('cabin')}
             onChange={(value) => {

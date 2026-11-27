@@ -4,7 +4,8 @@ const formatDate = (date) => {
   if (!date) return '';
   const weekday = date.toLocaleDateString('en-US', { weekday: 'short' });
   const month = date.toLocaleDateString('en-US', { month: 'short' });
-  return `${weekday}, ${date.getDate()} ${month} ${String(date.getFullYear()).slice(-2)}`;
+  const yearSuffix = String(date.getFullYear()).slice(-2);
+  return `${weekday}, ${date.getDate()} ${month} ${yearSuffix}`;
 };
 
 export default function FlightDateField({

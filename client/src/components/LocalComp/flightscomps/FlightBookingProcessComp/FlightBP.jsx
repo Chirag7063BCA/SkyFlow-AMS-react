@@ -81,7 +81,9 @@ export default function FlightBP({
   };
 
   const removeTraveller = (index) => {
-    setTravellers((current) => current.filter((_, itemIndex) => itemIndex !== index));
+    setTravellers((current) =>
+      current.filter((_, itemIndex) => itemIndex !== index),
+    );
     setTravellerError('');
   };
 
@@ -96,7 +98,9 @@ export default function FlightBP({
   const continueBooking = () => {
     if (step === 2) {
       if (travellers.length < travellerCount) {
-        setTravellerError(`Add all ${travellerCount} adult traveller(s) to continue.`);
+        setTravellerError(
+          `Add all ${travellerCount} adult traveller(s) to continue.`,
+        );
         return;
       }
       if (!formRef.current?.reportValidity()) return;

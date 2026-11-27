@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
-import flightsData from '../dummydata/flights.json';
-import FlightStatusCard from '../components/LocalComp/TrackFlightComp/FlightStatusCard';
-import LiveFlightTracker from '../components/LocalComp/TrackFlightComp/LiveFlightTracker';
+import { getFlights, getFlightsSync } from '../services/flightApi';
+import FlightStatusCard from
+  '../components/LocalComp/TrackFlightComp/FlightStatusCard';
+import LiveFlightTracker from
+  '../components/LocalComp/TrackFlightComp/LiveFlightTracker';
 import {
   evaluateAirborneFlight,
   scanAirborneFlights,
@@ -41,7 +43,23 @@ function pickTenAirborneFlights(airborneList) {
   return picked;
 }
 
-export default function TrackFlightPage({ flights = flightsData } = {}) {
+export default function TrackFlightPage({ flights: initialFlights } = {}) {
+  const [flightsList, setFlightsList] = useState(
+    () => initialFlights || getFlightsSync(),
+  );
+
+  useEffect(() => {
+    let isMounted = true;
+    if (!initialFlights) {
+      getFlights().then((data) => {
+        if (isMounted && Array.isArray(data)) setFlightsList(data);
+      });
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [initialFlights]);
+
   // Note current time on page load and keep updating every 5 seconds
   const [liveNow, setLiveNow] = useState(() => new Date());
 
@@ -53,7 +71,7 @@ export default function TrackFlightPage({ flights = flightsData } = {}) {
   }, []);
 
   // Scan all flights that are in the sky right now
-  const airborneFlights = scanAirborneFlights(flights, liveNow);
+  const airborneFlights = scanAirborneFlights(flightsList, liveNow);
   const tenAirborneFlights = pickTenAirborneFlights(airborneFlights);
 
   // Search form states
@@ -64,8 +82,9 @@ export default function TrackFlightPage({ flights = flightsData } = {}) {
   const [searchResults, setSearchResults] = useState(null);
   const [resultMessage, setResultMessage] = useState(
     tenAirborneFlights.length > 0
-      ? `Scanned at ${formatTime(liveNow)}: ${airborneFlights.length} flights currently in the sky — showing 10 live flights.`
-      : `Scanned at ${formatTime(liveNow)}: no flights currently airborne.`,
+      ? `Scanned at ${formatTime(liveNow)}: ` +
+        `${airborneFlights.length} flights in sky — showing 10 live.`
+      : `Scanned at ${formatTime(liveNow)}: no flights airborne.`,
   );
   const [selectedFlight, setSelectedFlight] = useState(
     tenAirborneFlights[0] || null,
@@ -74,7 +93,10 @@ export default function TrackFlightPage({ flights = flightsData } = {}) {
   // Re-check current clock and refresh the 10 airborne flights list
   const handleRescanSky = () => {
     const now = new Date();
-    const currentAirborne = scanAirborneFlights(flights, now);
+    getFlights().then((data) => {
+      if (Array.isArray(data)) setFlightsList(data);
+    });
+    const currentAirborne = scanAirborneFlights(flightsList, now);
     const topTen = pickTenAirborneFlights(currentAirborne);
 
     setLiveNow(now);
@@ -87,12 +109,13 @@ export default function TrackFlightPage({ flights = flightsData } = {}) {
       setFromCity(`${first.originCity} (${first.fromAirportCode})`);
       setToCity(`${first.destinationCity} (${first.toAirportCode})`);
       setResultMessage(
-        `Scanned at ${formatTime(now)}: ${currentAirborne.length} flights in the sky now — tracking ${first.flightNumber}.`,
+        `Scanned at ${formatTime(now)}: ${currentAirborne.length} ` +
+        `flights in sky — tracking ${first.flightNumber}.`,
       );
     } else {
       setSelectedFlight(null);
       setResultMessage(
-        `Scanned at ${formatTime(now)}: no flights currently airborne at this minute.`,
+        `Scanned at ${formatTime(now)}: no flights airborne now.`,
       );
     }
   };
@@ -104,10 +127,14 @@ export default function TrackFlightPage({ flights = flightsData } = {}) {
     setFlightNumber(updatedFlight.flightNumber);
     setFromCity(`${updatedFlight.originCity} (${updatedFlight.fromAirportCode})`);
     setToCity(`${updatedFlight.destinationCity} (${updatedFlight.toAirportCode})`);
+    const pct = Math.round(updatedFlight.airborneProgress * 100);
     setResultMessage(
       updatedFlight.isAirborne
-        ? `Tracking live airborne flight ${updatedFlight.flightNumber} (${updatedFlight.airline}) — ${Math.round(updatedFlight.airborneProgress * 100)}% complete (${updatedFlight.minutesRemaining}m left).`
-        : `${updatedFlight.flightNumber} is not currently in the air at ${formatTime(liveNow)}.`,
+        ? `Tracking live flight ${updatedFlight.flightNumber} ` +
+          `(${updatedFlight.airline}) — ${pct}% ` +
+          `(${updatedFlight.minutesRemaining}m left).`
+        : `${updatedFlight.flightNumber} is not in air at ` +
+          `${formatTime(liveNow)}.`,
     );
 
     const panel = document.getElementById('live-tracker-panel');
@@ -122,7 +149,7 @@ export default function TrackFlightPage({ flights = flightsData } = {}) {
 
     const now = new Date();
     setLiveNow(now);
-    const currentAirborne = scanAirborneFlights(flights, now);
+    const currentAirborne = scanAirborneFlights(flightsList, now);
 
     const numberQuery = flightNumber.trim().toUpperCase();
     const fromQuery = fromCity.trim().toLowerCase();
@@ -137,8 +164,12 @@ export default function TrackFlightPage({ flights = flightsData } = {}) {
     }
 
     const matches = currentAirborne.filter((flight) => {
-      const originText = `${flight.originCity} (${flight.fromAirportCode})`.toLowerCase();
-      const destText = `${flight.destinationCity} (${flight.toAirportCode})`.toLowerCase();
+      const originText = (
+        `${flight.originCity} (${flight.fromAirportCode})`
+      ).toLowerCase();
+      const destText = (
+        `${flight.destinationCity} (${flight.toAirportCode})`
+      ).toLowerCase();
 
       const numberMatches = numberQuery
         ? flight.flightNumber.toUpperCase().includes(numberQuery)
@@ -151,7 +182,8 @@ export default function TrackFlightPage({ flights = flightsData } = {}) {
 
     if (matches.length === 0) {
       setResultMessage(
-        `No flight matching your search is currently in the air at ${formatTime(now)}. Select any of the live airborne flights below.`,
+        `No flight matching search is in air at ${formatTime(now)}. ` +
+        'Select any live flight below.',
       );
       setSearchResults([]);
       return;
@@ -159,7 +191,8 @@ export default function TrackFlightPage({ flights = flightsData } = {}) {
 
     const topMatches = matches.slice(0, 10);
     setResultMessage(
-      `Found ${matches.length} airborne flight${matches.length > 1 ? 's' : ''} in the sky at ${formatTime(now)}.`,
+      `Found ${matches.length} airborne flight` +
+      `${matches.length > 1 ? 's' : ''} in the sky at ${formatTime(now)}.`,
     );
     setSearchResults(topMatches);
     setSelectedFlight(topMatches[0]);
@@ -351,7 +384,14 @@ export default function TrackFlightPage({ flights = flightsData } = {}) {
             <article className="feature-card dark-feature-card">
               <div className="feature-card-top">
                 <div className="feature-icon" aria-hidden="true">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
                   </svg>
                 </div>
@@ -367,7 +407,14 @@ export default function TrackFlightPage({ flights = flightsData } = {}) {
             <article className="feature-card dark-feature-card">
               <div className="feature-card-top">
                 <div className="feature-icon" aria-hidden="true">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <circle cx="11" cy="11" r="8" />
                     <line x1="21" y1="21" x2="16.65" y2="16.65" />
                   </svg>
@@ -384,7 +431,14 @@ export default function TrackFlightPage({ flights = flightsData } = {}) {
             <article className="feature-card dark-feature-card">
               <div className="feature-card-top">
                 <div className="feature-icon" aria-hidden="true">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                   </svg>
                 </div>
@@ -400,7 +454,14 @@ export default function TrackFlightPage({ flights = flightsData } = {}) {
             <article className="feature-card dark-feature-card">
               <div className="feature-card-top">
                 <div className="feature-icon" aria-hidden="true">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <circle cx="12" cy="12" r="10" />
                     <polyline points="12 6 12 12 16 14" />
                   </svg>
@@ -433,7 +494,14 @@ export default function TrackFlightPage({ flights = flightsData } = {}) {
           <article className="feature-card">
             <div className="feature-card-top">
               <div className="feature-icon" aria-hidden="true">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
                   <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
                 </svg>
               </div>
@@ -449,7 +517,14 @@ export default function TrackFlightPage({ flights = flightsData } = {}) {
           <article className="feature-card">
             <div className="feature-card-top">
               <div className="feature-icon" aria-hidden="true">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                   <line x1="16" y1="2" x2="16" y2="6" />
                   <line x1="8" y1="2" x2="8" y2="6" />
@@ -468,7 +543,14 @@ export default function TrackFlightPage({ flights = flightsData } = {}) {
           <article className="feature-card">
             <div className="feature-card-top">
               <div className="feature-icon" aria-hidden="true">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                   <circle cx="12" cy="10" r="3" />
                 </svg>
@@ -496,9 +578,16 @@ export default function TrackFlightPage({ flights = flightsData } = {}) {
             </p>
           </div>
           <ul className="help-list">
-            <li>Open or click Rescan Live Sky to detect 10 flights in the air now.</li>
-            <li>Click Track Live on any card to inspect its real-time map position.</li>
-            <li>Solid blue line marks distance covered; dotted line marks remaining route.</li>
+            <li>
+              Open or click Rescan Live Sky to detect 10 flights in the air now.
+            </li>
+            <li>
+              Click Track Live on any card to inspect its real-time map position.
+            </li>
+            <li>
+              Solid blue line marks distance covered; dotted line marks
+              remaining route.
+            </li>
           </ul>
         </div>
       </section>

@@ -129,7 +129,11 @@ function SpotlightCarousel({ slides, intervalMs, label }) {
         })}
 
         {slides.length > 1 && (
-          <div className="flight-spotlight-dots" role="tablist" aria-label={`${label} slides`}>
+          <div
+            className="flight-spotlight-dots"
+            role="tablist"
+            aria-label={`${label} slides`}
+          >
             {slides.map((slide, index) => (
               <button
                 key={slide.id}
@@ -137,7 +141,9 @@ function SpotlightCarousel({ slides, intervalMs, label }) {
                 role="tab"
                 aria-selected={index === activeIndex}
                 aria-label={`Show ${slide.title}`}
-                className={`flight-spotlight-dot ${index === activeIndex ? 'is-active' : ''}`}
+                className={`flight-spotlight-dot ${
+                  index === activeIndex ? 'is-active' : ''
+                }`}
                 onClick={() => setActiveIndex(index)}
               />
             ))}

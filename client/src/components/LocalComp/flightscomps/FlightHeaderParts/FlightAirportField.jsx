@@ -21,8 +21,13 @@ export default function FlightAirportField({
     const query = value.trim().toLowerCase();
     return airports
       .filter((airport) => {
-        const searchText =
-          `${airport.city || ''} ${airport.name || ''} ${airport.iata || ''} ${airport.country || ''}`.toLowerCase();
+        const airportValues = [
+          airport.city,
+          airport.name,
+          airport.iata,
+          airport.country,
+        ];
+        const searchText = airportValues.filter(Boolean).join(' ').toLowerCase();
         return !query || searchText.includes(query);
       })
       .slice(0, 10);

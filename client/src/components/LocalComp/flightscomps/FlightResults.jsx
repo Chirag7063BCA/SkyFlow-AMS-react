@@ -23,11 +23,7 @@ const parseFare = (fare) => {
   return Number.parseInt(String(fare || '').replace(/[^0-9]/g, ''), 10) || 0;
 };
 
-const getStopCount = (flight) => {
-  const stops = Number(flight.stops);
-  if (Number.isFinite(stops)) return stops;
-  return flight.nonStop ? 0 : 1;
-};
+const getStopCount = (flight) => (flight.nonStop ? 0 : 1);
 
 const locationMatches = (city, code, input) => {
   const query = input.trim().toLowerCase();
@@ -57,8 +53,13 @@ function FlightCard({ flight, index, currency, search }) {
     .replace(/\s+/g, '-');
   const stopCount = getStopCount(flight);
   const stopLabel =
-    stopCount === 0 ? 'Non-stop' : `${stopCount} ${stopCount === 1 ? 'stop' : 'stops'}`;
-  const travellerCount = Math.max(1, Math.floor(Number(search?.travellers) || 1));
+    stopCount === 0
+      ? 'Non-stop'
+      : `${stopCount} ${stopCount === 1 ? 'stop' : 'stops'}`;
+  const travellerCount = Math.max(
+    1,
+    Math.floor(Number(search?.travellers) || 1),
+  );
   const formattedPrice = formatPrice(parseFare(flight.fare), currency);
 
   return (
@@ -88,7 +89,9 @@ function FlightCard({ flight, index, currency, search }) {
             {flight.fromAirportCode} → {flight.toAirportCode}
           </span>
           <span className="pill">{stopLabel}</span>
-          {flight.status && <span className={`pill ${statusClass}`}>{flight.status}</span>}
+          {flight.status && (
+            <span className={`pill ${statusClass}`}>{flight.status}</span>
+          )}
           <span className="card-price">{formattedPrice}</span>
           <button
             className="flight-book-button"
@@ -184,7 +187,9 @@ export default function FlightResults({ flights = [], search }) {
   const note = !hasSearch
     ? 'Enter your travel details above to search.'
     : matchingFlights.length
-      ? `${matchingFlights.length} match${matchingFlights.length === 1 ? '' : 'es'} found.`
+      ? `${matchingFlights.length} match${
+          matchingFlights.length === 1 ? '' : 'es'
+        } found.`
       : 'No flights found matching your search.';
   const visibleFlights = matchingFlights.slice(0, displayLimit);
   const liveFlights = matchingFlights.filter(
@@ -229,7 +234,11 @@ export default function FlightResults({ flights = [], search }) {
               <div className="flights-grid">
                 {visibleFlights.map((flight, index) => (
                   <FlightCard
-                    key={flight.id || flight.flightNumber || `${flight.airline}-${index}`}
+                    key={
+                      flight.id ||
+                      flight.flightNumber ||
+                      `${flight.airline}-${index}`
+                    }
                     flight={flight}
                     index={index}
                     currency={currency}
@@ -338,7 +347,9 @@ export default function FlightResults({ flights = [], search }) {
                       </label>
                     ))
                   ) : (
-                    <p className="filter-empty">Airline filters will appear when flight data is available.</p>
+                    <p className="filter-empty">
+                      Airline filters will appear when flight data is available.
+                    </p>
                   )}
                 </div>
               </fieldset>

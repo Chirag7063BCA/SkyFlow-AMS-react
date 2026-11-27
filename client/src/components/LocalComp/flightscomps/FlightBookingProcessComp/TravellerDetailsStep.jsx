@@ -40,12 +40,11 @@ export default function TravellerDetailsStep({
       <div className="traveller-login-banner">
         <span className="traveller-login-icon" aria-hidden="true" />
         <p>
-          Log in to view your <strong>saved traveller list, unlock amazing deals</strong>{' '}
+          Log in to view your{' '}
+          <strong>saved traveller list, unlock amazing deals</strong>{' '}
           &amp; much more!
         </p>
-        <button type="button" onClick={() => window.openDrawer?.()}>
-          LOGIN NOW
-        </button>
+        <button type="button">LOGIN NOW</button>
       </div>
 
       <div className="traveller-count">
@@ -113,7 +112,11 @@ export default function TravellerDetailsStep({
                 />
               </label>
 
-              <div className="traveller-gender" role="radiogroup" aria-label={`Gender for adult ${index + 1}`}>
+              <div
+                className="traveller-gender"
+                role="radiogroup"
+                aria-label={`Gender for adult ${index + 1}`}
+              >
                 {['male', 'female'].map((gender) => (
                   <label
                     className={traveller.gender === gender ? 'selected' : ''}

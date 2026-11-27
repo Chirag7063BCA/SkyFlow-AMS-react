@@ -17,7 +17,7 @@ async function postJson(endpoint, body) {
 export async function loginUser(email, password) {
   const { ok, data, networkError } = await postJson('/auth/login', { email, password });
   if (networkError) {
-    return { success: false, message: 'Cannot connect to Spring Boot server. Ensure the backend is running on port 8080.' };
+    return { success: false, message: 'Cannot connect to server. Ensure Spring Boot is running on port 8080.' };
   }
   if (!ok) {
     return { success: false, message: data?.message || 'Login failed.' };
@@ -28,7 +28,7 @@ export async function loginUser(email, password) {
 export async function registerUser(fullName, email, password) {
   const { ok, data, networkError } = await postJson('/auth/register', { fullName, email, password });
   if (networkError) {
-    return { success: false, message: 'Cannot connect to Spring Boot server. Ensure the backend is running on port 8080.' };
+    return { success: false, message: 'Cannot connect to server. Ensure Spring Boot is running on port 8080.' };
   }
   if (!ok) {
     return { success: false, message: data?.message || 'Registration failed.' };
@@ -39,4 +39,55 @@ export async function registerUser(fullName, email, password) {
 export async function syncGoogleUser({ name, email, picture }) {
   const { ok, data } = await postJson('/auth/google', { name, email, picture });
   return { success: true, user: ok && data?.user ? data.user : { name, email, picture } };
+}
+
+export function triggerGoogleSignIn({ clientId, onLoading, onError, onSuccess }) {
+  if (!clientId) {
+    onError('Google Client ID not configured. Please check your .env file.');
+    return;
+  }
+  if (!window.google?.accounts?.oauth2) {
+    onError('Google Identity Services not loaded. Please verify your connection.');
+    return;
+  }
+
+  onLoading?.(true);
+
+  try {
+    const tokenClient = window.google.accounts.oauth2.initTokenClient({
+      client_id: clientId,
+      scope: 'email profile openid',
+      callback: async (tokenResponse) => {
+        onLoading?.(false);
+        if (tokenResponse.error) {
+          onError(`Google Sign-In failed: ${tokenResponse.error}`);
+          return;
+        }
+        try {
+          const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+            headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+          });
+          if (!res.ok) throw new Error('Failed to retrieve profile');
+          const profile = await res.json();
+          if (profile.email) {
+            const googleUserData = {
+              name: profile.name || profile.email.split('@')[0],
+              email: profile.email,
+              picture: profile.picture || '',
+            };
+            const syncRes = await syncGoogleUser(googleUserData);
+            onSuccess(syncRes.user || googleUserData);
+          } else {
+            onError('Google account did not provide a valid email.');
+          }
+        } catch {
+          onError('Failed to fetch profile details from Google.');
+        }
+      },
+    });
+    tokenClient.requestAccessToken({ prompt: 'select_account' });
+  } catch (err) {
+    onLoading?.(false);
+    onError(err.message || 'Error initializing Google authentication.');
+  }
 }

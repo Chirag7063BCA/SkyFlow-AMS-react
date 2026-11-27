@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import AdminPage from './Pages/AdminPage';
 import FlightsPage from './Pages/FlightsPage';
-import HelpPage from './Pages/HelpPage';
+import HelpPage from './Pages/Help/HelpPage';
 import LandingPage from './Pages/LandingPage';
 import NotFoundPage from './Pages/NotFoundPage';
 import TrackFlightPage from './Pages/TrackFlightPage';

@@ -33,10 +33,13 @@ export function AuthProvider({ children }) {
     setCurrentUser(null);
   };
 
+  const isAdmin = currentUser?.role === 'ROLE_ADMIN';
+
   return (
     <AuthContext.Provider
       value={{
         currentUser,
+        isAdmin,
         isAuthOpen,
         authDefaultTab,
         openAuth,

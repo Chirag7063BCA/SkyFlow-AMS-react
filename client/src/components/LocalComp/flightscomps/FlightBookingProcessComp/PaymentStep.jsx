@@ -1,5 +1,7 @@
 export default function PaymentStep({ flight, travellers, contact }) {
-  const route = `${flight.originCity || flight.fromAirportCode} to ${flight.destinationCity || flight.toAirportCode}`;
+  const origin = flight.originCity || flight.fromAirportCode;
+  const destination = flight.destinationCity || flight.toAirportCode;
+  const route = `${origin} to ${destination}`;
 
   return (
     <section className="flight-booking-panel">

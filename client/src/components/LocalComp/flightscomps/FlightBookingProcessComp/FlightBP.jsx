@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { saveBooking } from '../../../../services/bookingApi';
 import FlightDetailsStep from './FlightDetailsStep';
 import FareSummary from './FareSummary';
 import PaymentStep from './PaymentStep';
@@ -32,9 +34,11 @@ export default function FlightBP({
   formatFare,
   onClose,
 }) {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [travellers, setTravellers] = useState([]);
   const [travellerError, setTravellerError] = useState('');
+  const [confirmedBooking, setConfirmedBooking] = useState(null);
   const [contact, setContact] = useState({
     countryCode: '+91',
     email: '',
@@ -72,11 +76,23 @@ export default function FlightBP({
 
   const updateTraveller = (index, name, value) => {
     setTravellers((current) =>
-      current.map((traveller, travellerIndex) =>
-        travellerIndex === index
-          ? { ...traveller, [name]: value }
-          : traveller,
-      ),
+      current.map((traveller, travellerIndex) => {
+        if (travellerIndex !== index) return traveller;
+
+        if (name === 'identityType') {
+          return { ...traveller, identityType: value, identityNumber: '' };
+        }
+
+        if (name === 'identityNumber') {
+          const sanitized =
+            traveller.identityType === 'aadhaar'
+              ? value.replace(/\D/g, '').slice(0, 12)
+              : value.replace(/[^a-z0-9]/gi, '').toUpperCase().slice(0, 20);
+          return { ...traveller, identityNumber: sanitized };
+        }
+
+        return { ...traveller, [name]: value };
+      }),
     );
   };
 
@@ -106,6 +122,18 @@ export default function FlightBP({
       if (!formRef.current?.reportValidity()) return;
     }
     setStep((current) => Math.min(current + 1, steps.length));
+  };
+
+  const handleSaveBooking = () => {
+    if (confirmedBooking) return;
+    const saved = saveBooking({
+      flight,
+      departureDate,
+      travellers,
+      contact,
+      totalAmount: fareAmount * bookingTravellerCount,
+    });
+    setConfirmedBooking(saved);
   };
 
   return (
@@ -176,6 +204,7 @@ export default function FlightBP({
                 flight={flight}
                 travellers={travellers}
                 contact={contact}
+                confirmedBooking={confirmedBooking}
               />
             )}
 
@@ -195,13 +224,26 @@ export default function FlightBP({
                   {step === 1 ? 'Continue to traveller details' : 'Review payment'}
                   <span aria-hidden="true">→</span>
                 </button>
+              ) : confirmedBooking ? (
+                <button
+                  type="button"
+                  className="flight-booking-primary"
+                  onClick={() => {
+                    onClose();
+                    navigate('/bookings');
+                  }}
+                >
+                  View in My Bookings
+                  <span aria-hidden="true">→</span>
+                </button>
               ) : (
                 <button
                   type="button"
                   className="flight-booking-primary"
-                  disabled
+                  onClick={handleSaveBooking}
                 >
-                  Payment integration coming soon
+                  Confirm booking
+                  <span aria-hidden="true">→</span>
                 </button>
               )}
             </footer>

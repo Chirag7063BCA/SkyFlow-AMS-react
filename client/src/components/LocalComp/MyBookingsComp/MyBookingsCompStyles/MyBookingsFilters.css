@@ -1,0 +1,237 @@
+.mb-toolbar {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: -1.75rem;
+}
+
+.mb-oval-search {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  height: 54px;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 1.35rem;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(10, 30, 50, 0.14);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.mb-oval-search:focus-within {
+  border-color: #5b6ee1;
+  box-shadow: 0 14px 36px rgba(91, 110, 225, 0.22);
+}
+
+.mb-search-icon {
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
+  color: #64748b;
+}
+
+.mb-oval-search input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: #0f172a;
+  font: inherit;
+  font-size: 0.95rem;
+}
+
+.mb-oval-search input::placeholder {
+  color: #94a3b8;
+}
+
+.mb-filter-wrap {
+  position: relative;
+  flex-shrink: 0;
+  padding-bottom: 10px;
+  margin-bottom: -10px;
+}
+
+.mb-filter-btn {
+  display: inline-flex;
+  height: 54px;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0 1.4rem;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(10, 30, 50, 0.14);
+  color: #1e293b;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 600;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.mb-filter-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.mb-filter-btn:hover,
+.mb-filter-wrap.is-open .mb-filter-btn,
+.mb-filter-btn.has-active {
+  border-color: #5b6ee1;
+  background: #5b6ee1;
+  color: #fff;
+}
+
+.mb-filter-panel {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 30;
+  width: min(295px, calc(100vw - 2rem));
+  overflow: hidden;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 22px 48px rgba(15, 23, 42, 0.22);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.mb-filter-wrap.is-open .mb-filter-panel {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.mb-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem 1.15rem;
+  border-radius: 0 0 18px 18px;
+  background: #5b6ee1;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.mb-panel-head svg {
+  width: 18px;
+  height: 18px;
+}
+
+.mb-panel-body {
+  padding: 1.15rem 1.25rem 1.25rem;
+}
+
+.mb-panel-title {
+  margin: 0 0 0.85rem;
+  color: #334155;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.mb-status-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem 0.65rem;
+}
+
+.mb-status-option {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.2rem 0;
+  border: 0;
+  background: transparent;
+  color: #475569;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 500;
+  text-align: left;
+}
+
+.mb-status-option.is-selected {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.mb-radio-circle {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  place-items: center;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 50%;
+  background: #fff;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.mb-status-option.is-selected .mb-radio-circle {
+  border-color: #5b6ee1;
+  background: #5b6ee1;
+}
+
+.mb-panel-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.25rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.mb-apply-btn {
+  padding: 0.62rem 1.65rem;
+  border: 0;
+  border-radius: 999px;
+  background: #5b6ee1;
+  box-shadow: 0 8px 18px rgba(91, 110, 225, 0.35);
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.mb-apply-btn:hover {
+  background: #4a5dd4;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 640px) {
+  .mb-toolbar {
+    gap: 10px;
+    margin-bottom: -1.5rem;
+  }
+
+  .mb-oval-search,
+  .mb-filter-btn {
+    height: 48px;
+  }
+
+  .mb-oval-search {
+    padding: 0 1rem;
+  }
+
+  .mb-oval-search input {
+    font-size: 0.88rem;
+  }
+
+  .mb-filter-btn {
+    padding: 0 1rem;
+    font-size: 0.86rem;
+  }
+}

@@ -13,6 +13,27 @@ const months = [
 const currentYear = new Date().getFullYear();
 const years = Array.from({ length: 100 }, (_, index) => currentYear - index);
 
+const idConfig = {
+  aadhaar: {
+    label: 'Aadhaar number',
+    placeholder: '12-digit Aadhaar number',
+    inputMode: 'numeric',
+    minLength: 12,
+    maxLength: 12,
+    pattern: '[0-9]{12}',
+    title: 'Enter the 12-digit Aadhaar number',
+  },
+  passport: {
+    label: 'Passport number',
+    placeholder: 'Enter passport number',
+    inputMode: 'text',
+    minLength: 6,
+    maxLength: 20,
+    pattern: '[A-Za-z0-9]{6,20}',
+    title: 'Enter a valid 6 to 20 character passport number',
+  },
+};
+
 export default function TravellerDetailsStep({
   travellerCount,
   maxTravellerCount,
@@ -73,7 +94,9 @@ export default function TravellerDetailsStep({
           </p>
         )}
 
-        {travellers.map((traveller, index) => (
+        {travellers.map((traveller, index) => {
+          const idRule = idConfig[traveller.identityType];
+          return (
           <fieldset className="traveller-card" key={index}>
             <div className="traveller-card-header">
               <span className="traveller-check" aria-hidden="true">✓</span>
@@ -245,52 +268,30 @@ export default function TravellerDetailsStep({
                     </select>
                   </label>
                   <label>
-                    <span>
-                      {traveller.identityType === 'aadhaar'
-                        ? 'Aadhaar number'
-                        : traveller.identityType === 'passport'
-                          ? 'Passport number'
-                          : 'Document number'}
-                    </span>
+                    <span>{idRule ? idRule.label : 'Document number'}</span>
                     <input
                       name="identityNumber"
                       type="text"
-                      inputMode={
-                        traveller.identityType === 'aadhaar' ? 'numeric' : 'text'
-                      }
-                      maxLength={
-                        traveller.identityType === 'aadhaar' ? 12 : 20
-                      }
-                      pattern={
-                        traveller.identityType === 'aadhaar'
-                          ? '[0-9]{12}'
-                          : undefined
-                      }
-                      title={
-                        traveller.identityType === 'aadhaar'
-                          ? 'Enter the 12-digit Aadhaar number'
-                          : undefined
-                      }
+                      disabled={!idRule}
+                      inputMode={idRule?.inputMode || 'text'}
+                      minLength={idRule?.minLength}
+                      maxLength={idRule?.maxLength || 20}
+                      pattern={idRule?.pattern}
+                      title={idRule?.title}
                       autoComplete="off"
                       value={traveller.identityNumber}
                       onChange={(event) => updateTraveller(index, event)}
-                      placeholder={
-                        traveller.identityType === 'aadhaar'
-                          ? '12-digit Aadhaar number'
-                          : 'Enter passport number'
-                      }
+                      placeholder={idRule?.placeholder || 'Select an ID type first'}
                       required
                     />
                   </label>
                 </div>
-                <p>
-                  ID verification is not active yet. These details stay in this
-                  form and are not sent to a service.
-                </p>
+                <p>Your Aadhaar or Passport number is saved with your booking.</p>
               </div>
             </div>
           </fieldset>
-        ))}
+          );
+        })}
 
         <button
           className="traveller-add-button"

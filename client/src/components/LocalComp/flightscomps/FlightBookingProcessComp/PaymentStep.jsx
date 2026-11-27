@@ -1,4 +1,11 @@
-export default function PaymentStep({ flight, travellers, contact }) {
+import { formatDocument } from '../../../../services/bookingApi';
+
+export default function PaymentStep({
+  flight,
+  travellers,
+  contact,
+  confirmedBooking,
+}) {
   const origin = flight.originCity || flight.fromAirportCode;
   const destination = flight.destinationCity || flight.toAirportCode;
   const route = `${origin} to ${destination}`;
@@ -11,22 +18,37 @@ export default function PaymentStep({ flight, travellers, contact }) {
         Your traveller and flight details are ready for checkout.
       </p>
 
-      <div className="flight-booking-payment">
-        <h4>Secure payment will be available here</h4>
-        <p>
-          A payment provider has not been connected yet. Payment details are
-          not collected or processed on this page.
-        </p>
-        <span>Coming soon</span>
-      </div>
+      {confirmedBooking ? (
+        <div className="flight-booking-confirmed">
+          <h4>Booking Confirmed (PNR: {confirmedBooking.pnr})</h4>
+          <p>Your ticket and ID details are saved in My Bookings.</p>
+          <span>Confirmed</span>
+        </div>
+      ) : (
+        <div className="flight-booking-payment">
+          <h4>Payment coming soon</h4>
+          <p>Confirm your booking below to save it in My Bookings.</p>
+          <span>Coming soon</span>
+        </div>
+      )}
 
       <dl className="flight-booking-review">
-        {travellers.map((traveller, index) => (
-          <div key={index}>
-            <dt>Adult {index + 1}</dt>
-            <dd>{`${traveller.firstName} ${traveller.lastName}`}</dd>
-          </div>
-        ))}
+        {travellers.map((traveller, index) => {
+          const doc = formatDocument(
+            traveller.identityType,
+            traveller.identityNumber,
+            false,
+          );
+          return (
+            <div key={index}>
+              <dt>Adult {index + 1}</dt>
+              <dd>{`${traveller.firstName} ${traveller.lastName}`}</dd>
+              <dd className="flight-booking-review-doc">
+                {doc.label}: {doc.value}
+              </dd>
+            </div>
+          );
+        })}
         <div>
           <dt>Booking updates</dt>
           <dd>{contact.email}</dd>

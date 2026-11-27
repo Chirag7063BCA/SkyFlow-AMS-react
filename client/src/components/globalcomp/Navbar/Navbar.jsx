@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import ProfileDropdown from '../ProfileDropdown/ProfileDropdown';
 import { useAuth } from '../../../context/useAuth';
+import { scrollToTop } from '../../../utils/scrollToTop';
 import logoGif from '../../../assets/navbar logo.gif';
 import './Navbar.css';
 
@@ -32,8 +33,13 @@ export default function Navbar() {
     return () => window.removeEventListener('keydown', onKey);
   }, [isMobileOpen]);
 
-  const handleNav = (route) => {
+  const closeAndScrollTop = () => {
     setIsMobileOpen(false);
+    scrollToTop(220);
+  };
+
+  const handleNav = (route) => {
+    closeAndScrollTop();
     if (route === 'home') navigate('/');
     else navigate(`/${route}`);
   };
@@ -45,7 +51,7 @@ export default function Navbar() {
           to="/"
           end
           className="navbar-logo"
-          onClick={() => setIsMobileOpen(false)}
+          onClick={closeAndScrollTop}
         >
           <img src={logoGif} alt="SkyFlow Logo" className="logo-gif" />
           <span>Sky</span>Flow
@@ -73,7 +79,7 @@ export default function Navbar() {
                   className={({ isActive }) =>
                     `nav-link ${isActive ? 'active' : ''}`
                   }
-                  onClick={() => setIsMobileOpen(false)}
+                  onClick={closeAndScrollTop}
                 >
                   {item.label}
                 </NavLink>

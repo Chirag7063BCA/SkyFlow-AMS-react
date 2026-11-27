@@ -1,37 +1,27 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import './MyBookingStyles/mybooking.css';
 import './MyBookingStyles/ticket.css';
-import { BOOKINGS_DATA } from './bookingsData';
+import { downloadTicket, fetchMyBookings } from './bookingsApi';
 import MyBookingFilter from './MyBookingFilter';
 import MyBookingTickets from './MyBookingTickets';
-import TicketModal from './TicketModal';
 
-function downloadTicket(booking) {
-  const text = [
-    `SKYFLOW BOARDING PASS (${booking.badgeText})`,
-    `PNR: ${booking.pnr} | Flight: ${booking.flightNumber} (${booking.airline})`,
-    `Route: ${booking.origin.code} (${booking.origin.city}) -> ${booking.destination.code} (${booking.destination.city})`,
-    `Date: ${booking.date} | Time: ${booking.time} | Seat: ${booking.seat}`,
-  ].join('\n');
-
-  const blob = new Blob([text], { type: 'text/plain' });
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = `SkyFlow-${booking.pnr}.txt`;
-  link.click();
-  URL.revokeObjectURL(link.href);
-}
-
-export default function MyBookings({ onNavigateHome }) {
+export default function MyBookings() {
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBooking, setSelectedBooking] = useState(null);
 
+  useEffect(() => {
+    fetchMyBookings()
+      .then((data) => setBookings(data))
+      .finally(() => setLoading(false));
+  }, []);
+
   const filteredBookings = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
-    return BOOKINGS_DATA.filter((b) => {
-      const matchesTab = activeFilter === 'all' || b.status === activeFilter;
-      if (!matchesTab) return false;
+    return bookings.filter((b) => {
+      if (activeFilter !== 'all' && b.status !== activeFilter) return false;
       if (!q) return true;
       return (
         b.pnr.toLowerCase().includes(q) ||
@@ -42,7 +32,7 @@ export default function MyBookings({ onNavigateHome }) {
         b.destination.city.toLowerCase().includes(q)
       );
     });
-  }, [activeFilter, searchQuery]);
+  }, [bookings, activeFilter, searchQuery]);
 
   const handleAction = (booking, label) => {
     if (label.includes('Download')) downloadTicket(booking);
@@ -50,24 +40,21 @@ export default function MyBookings({ onNavigateHome }) {
   };
 
   return (
-    <>
+    <div className="my-bookings-page">
       <MyBookingFilter
         activeFilter={activeFilter}
         onFilterChange={setActiveFilter}
-        onNavigateHome={onNavigateHome}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
       />
       <MyBookingTickets
         bookings={filteredBookings}
-        totalCount={BOOKINGS_DATA.length}
+        loading={loading}
         activeFilter={activeFilter}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
+        selectedBooking={selectedBooking}
+        onCloseModal={() => setSelectedBooking(null)}
         onAction={handleAction}
       />
-      <TicketModal
-        booking={selectedBooking}
-        onClose={() => setSelectedBooking(null)}
-      />
-    </>
+    </div>
   );
 }

@@ -1,9 +1,9 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
 
-async function postJson(endpoint, body) {
+async function sendJson(endpoint, body, method = 'POST') {
   try {
     const res = await fetch(`${API_BASE_URL}${endpoint}`, {
-      method: 'POST',
+      method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     });
@@ -15,7 +15,7 @@ async function postJson(endpoint, body) {
 }
 
 export async function loginUser(email, password) {
-  const { ok, data, networkError } = await postJson('/auth/login', { email, password });
+  const { ok, data, networkError } = await sendJson('/auth/login', { email, password });
   if (networkError) {
     return { success: false, message: 'Cannot connect to server. Ensure Spring Boot is running on port 8080.' };
   }
@@ -26,7 +26,7 @@ export async function loginUser(email, password) {
 }
 
 export async function registerUser(fullName, email, password) {
-  const { ok, data, networkError } = await postJson('/auth/register', { fullName, email, password });
+  const { ok, data, networkError } = await sendJson('/auth/register', { fullName, email, password });
   if (networkError) {
     return { success: false, message: 'Cannot connect to server. Ensure Spring Boot is running on port 8080.' };
   }
@@ -37,11 +37,22 @@ export async function registerUser(fullName, email, password) {
 }
 
 export async function syncGoogleUser({ name, email, picture }) {
-  const { ok, data } = await postJson('/auth/google', { name, email, picture });
+  const { ok, data } = await sendJson('/auth/google', { name, email, picture });
   return {
     success: true,
-    user: ok && data?.user ? data.user : { name, email, picture, role: 'ROLE_USER' },
+    user: ok && data?.user ? data.user : { name, email, picture },
   };
+}
+
+export async function updateUserProfile(profile) {
+  const { ok, data, networkError } = await sendJson('/auth/profile', profile, 'PUT');
+  if (networkError) {
+    return { success: false, offline: true, message: 'Saved locally (server offline).' };
+  }
+  if (!ok) {
+    return { success: false, message: data?.message || 'Failed to update profile in database.' };
+  }
+  return { success: true, user: data?.user, message: 'Saved' };
 }
 
 export function triggerGoogleSignIn({ clientId, onLoading, onError, onSuccess }) {
@@ -79,7 +90,7 @@ export function triggerGoogleSignIn({ clientId, onLoading, onError, onSuccess })
               picture: profile.picture || '',
             };
             const syncRes = await syncGoogleUser(googleUserData);
-            onSuccess(syncRes.user || { ...googleUserData, role: 'ROLE_USER' });
+            onSuccess(syncRes.user || googleUserData);
           } else {
             onError('Please use a verified Google account with a valid email.');
           }

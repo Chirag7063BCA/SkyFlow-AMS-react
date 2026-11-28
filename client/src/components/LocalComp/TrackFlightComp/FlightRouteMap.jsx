@@ -1,7 +1,10 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { findAirportSync } from '../../../services/flightApi';
+import {
+  getAirports,
+  getAirportsSync,
+} from '../../../services/flightApi';
 import { evaluateAirborneFlight } from './flightScanner';
 
 // Calculate straight-line distance (km) between two airports using Haversine formula
@@ -52,10 +55,26 @@ export default function FlightRouteMap({ flight, liveNow }) {
   const mapRef = useRef(null);
   const routeLayerRef = useRef(null);
   const lastRouteRef = useRef('');
+  const [airports, setAirports] = useState(() => getAirportsSync());
 
-  // Find origin & destination coordinates from flightApi service
-  const origin = findAirportSync(flight?.fromAirportCode);
-  const destination = findAirportSync(flight?.toAirportCode);
+  const originCode = flight?.fromAirportCode?.toUpperCase();
+  const destinationCode = flight?.toAirportCode?.toUpperCase();
+  const origin = airports.find(
+    (airport) => airport.iata?.toUpperCase() === originCode,
+  );
+  const destination = airports.find(
+    (airport) => airport.iata?.toUpperCase() === destinationCode,
+  );
+
+  useEffect(() => {
+    let isMounted = true;
+    getAirports().then((data) => {
+      if (isMounted) setAirports(data);
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Calculate live progress (0% to 100%)
   const liveFlight = evaluateAirborneFlight(flight, liveNow);
@@ -102,7 +121,7 @@ export default function FlightRouteMap({ flight, liveNow }) {
       routeLayerRef.current = null;
       lastRouteRef.current = '';
     };
-  }, []);
+  }, [origin, destination]);
 
   // Step 2: Draw solid covered line, dotted remaining line, pins, and jetliner
   useEffect(() => {

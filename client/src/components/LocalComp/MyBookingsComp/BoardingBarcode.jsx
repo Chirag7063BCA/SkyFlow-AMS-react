@@ -1,36 +1,25 @@
 import { useEffect, useState } from 'react';
 import QRCode from 'qrcode';
-import { getBookingDocument } from '../../../services/bookingApi';
+import { encodePassToken } from '../../../services/bookingApi';
 
-function formatTicketText(booking) {
-  const doc = getBookingDocument(booking);
-  const docValue = doc.value.replace(/•/g, '*');
-  const status = String(booking.status || 'upcoming').toUpperCase();
-
-  return [
-    'SKYFLOW BOARDING PASS',
-    `PNR: ${booking.pnr}`,
-    `Passenger: ${booking.passenger || 'Guest Traveller'}`,
-    `Flight: ${booking.flightNumber} (${booking.airline})`,
-    `Route: ${booking.origin.code} -> ${booking.destination.code}`,
-    `Date: ${booking.date} | ${booking.time}`,
-    `Seat: ${booking.seat} | ${booking.travelClass}`,
-    `${doc.label}: ${docValue}`,
-    `Status: ${status}`,
-  ].join('\n');
-}
-
-export default function BoardingBarcode({ booking }) {
+export default function BoardingBarcode({
+  booking,
+  token: customToken,
+  boxClassName = 'mb-bp-qr-box',
+  imgClassName = 'mb-bp-qr',
+}) {
   const [qrSrc, setQrSrc] = useState('');
-  const ticketText = formatTicketText(booking);
+  const token = customToken || encodePassToken(booking);
+  const baseUrl = import.meta.env.VITE_PUBLIC_APP_URL || window.location.origin;
+  const passUrl = `${baseUrl}/boarding-pass?t=${encodeURIComponent(token)}`;
 
   useEffect(() => {
     let active = true;
-    QRCode.toDataURL(ticketText, {
-      width: 260,
-      margin: 1,
-      errorCorrectionLevel: 'M',
-      color: { dark: '#0f172a', light: '#ffffff' },
+    QRCode.toDataURL(passUrl, {
+      width: 280,
+      margin: 2,
+      errorCorrectionLevel: 'L',
+      color: { dark: '#000000', light: '#ffffff' },
     })
       .then((url) => {
         if (active) setQrSrc(url);
@@ -40,16 +29,16 @@ export default function BoardingBarcode({ booking }) {
     return () => {
       active = false;
     };
-  }, [ticketText]);
+  }, [passUrl]);
 
   if (!qrSrc) return null;
 
   return (
-    <div className="mb-bp-qr-box" title={ticketText}>
+    <div className={boxClassName} title={`Scan boarding pass ${booking.pnr}`}>
       <img
         src={qrSrc}
-        alt={`QR code with ticket details for ${booking.pnr}`}
-        className="mb-bp-qr"
+        alt={`QR code for boarding pass ${booking.pnr}`}
+        className={imgClassName}
       />
     </div>
   );

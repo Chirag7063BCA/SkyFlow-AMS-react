@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import AdminPage from './Pages/AdminPage';
+import BoardingPassPage from './Pages/BoardingPassPage';
 import FlightsPage from './Pages/FlightsPage';
 import HelpPage from './Pages/Help/HelpPage';
 import LandingPage from './Pages/LandingPage';
@@ -57,6 +58,7 @@ export default function App() {
             <Route path="*" element={<NotFoundPage />} />
           </Route>
           <Route path="/admin/*" element={<AdminPage />} />
+          <Route path="/boarding-pass" element={<BoardingPassPage />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

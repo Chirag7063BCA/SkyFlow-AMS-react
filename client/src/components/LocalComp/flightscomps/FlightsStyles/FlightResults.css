@@ -217,13 +217,12 @@
   padding: 0.25rem 0.75rem;
   border: 1px solid rgba(255, 255, 255, 0.32);
   border-radius: 999px;
-  background: rgba(15, 38, 64, 0.38);
+  background: rgba(15, 38, 64, 0.62);
   color: #eef6fb;
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  backdrop-filter: blur(6px);
 }
 
 .flight-spotlight-body h4 {

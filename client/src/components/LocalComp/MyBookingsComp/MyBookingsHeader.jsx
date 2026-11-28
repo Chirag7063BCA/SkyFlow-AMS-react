@@ -108,12 +108,8 @@ export default function MyBookingsHeader({ upcomingBookings = [], children }) {
       <div className="my-bookings-header__inner">
         <div className="mb-top-row">
           <div className="mb-title-area">
-            <h1 className="my-bookings-title" aria-label="My bookings">
-              <span>MY</span>
-              <span className="my-bookings-word-wrapper" aria-hidden="true">
-                <span className="my-bookings-animated-word">BOOKINGS</span>
-                <span className="my-bookings-animated-word delay">FLIGHTS</span>
-              </span>
+            <h1 className="my-bookings-title">
+              MY <span className="my-bookings-word-accent">BOOKINGS</span>
             </h1>
             <p className="mb-subtitle">View and manage all your flight bookings</p>
           </div>

@@ -38,7 +38,10 @@ export async function registerUser(fullName, email, password) {
 
 export async function syncGoogleUser({ name, email, picture }) {
   const { ok, data } = await postJson('/auth/google', { name, email, picture });
-  return { success: true, user: ok && data?.user ? data.user : { name, email, picture } };
+  return {
+    success: true,
+    user: ok && data?.user ? data.user : { name, email, picture, role: 'ROLE_USER' },
+  };
 }
 
 export function triggerGoogleSignIn({ clientId, onLoading, onError, onSuccess }) {
@@ -69,16 +72,16 @@ export function triggerGoogleSignIn({ clientId, onLoading, onError, onSuccess })
           });
           if (!res.ok) throw new Error('Failed to retrieve profile');
           const profile = await res.json();
-          if (profile.email) {
+          if (profile.email && profile.email_verified !== false) {
             const googleUserData = {
               name: profile.name || profile.email.split('@')[0],
-              email: profile.email,
+              email: profile.email.trim().toLowerCase(),
               picture: profile.picture || '',
             };
             const syncRes = await syncGoogleUser(googleUserData);
-            onSuccess(syncRes.user || googleUserData);
+            onSuccess(syncRes.user || { ...googleUserData, role: 'ROLE_USER' });
           } else {
-            onError('Google account did not provide a valid email.');
+            onError('Please use a verified Google account with a valid email.');
           }
         } catch {
           onError('Failed to fetch profile details from Google.');

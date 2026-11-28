@@ -39,6 +39,7 @@ export default function BoardingBarcode({
         src={qrSrc}
         alt={`QR code for boarding pass ${booking.pnr}`}
         className={imgClassName}
+        decoding="async"
       />
     </div>
   );

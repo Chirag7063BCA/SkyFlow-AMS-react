@@ -4,14 +4,16 @@ import { useAuth } from '../../../context/useAuth';
 import googleIcon from '../../../assets/google-icon.svg';
 import './LoginSidebar.css';
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 const FORM_FIELDS = [
-  { name: 'fullName', label: 'Full Name', type: 'text', placeholder: 'Enter your full name', signUpOnly: true },
+  { name: 'fullName', label: 'Full Name', type: 'text', placeholder: 'Enter your full name', minLength: 2, signUpOnly: true },
   { name: 'email', label: 'Email Address', type: 'email', placeholder: 'name@example.com' },
   { name: 'password', label: 'Password', type: 'password', placeholder: '••••••••', minLength: 6 },
   { name: 'confirmPassword', label: 'Confirm Password', type: 'password', placeholder: 'Re-enter your password', minLength: 6, signUpOnly: true },
 ];
 
-function AuthPanel({ defaultTab, onClose, handleLoginSuccess }) {
+function AuthPanel({ defaultTab, authMessage, onClose, handleLoginSuccess }) {
   const [isSignIn, setIsSignIn] = useState(defaultTab !== 'signup');
   const [authError, setAuthError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -33,31 +35,36 @@ function AuthPanel({ defaultTab, onClose, handleLoginSuccess }) {
     if (authError) setAuthError('');
   };
 
-  const onSuccess = (user) => {
-    localStorage.setItem('skyflow_user', JSON.stringify(user));
-    if (handleLoginSuccess) handleLoginSuccess(user);
-    onClose();
-  };
-
   const handleGoogle = () => {
+    setAuthError('');
     triggerGoogleSignIn({
       clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID?.trim(),
       onLoading: setLoading,
       onError: setAuthError,
-      onSuccess,
+      onSuccess: handleLoginSuccess,
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setAuthError('');
+
     const email = form.email.trim().toLowerCase();
     const { password, confirmPassword, fullName } = form;
 
-    if (!email || !password) return setAuthError('Please enter both email and password.');
+    if (!EMAIL_PATTERN.test(email)) {
+      return setAuthError('Please enter a valid email address.');
+    }
+    if (password.length < 6) {
+      return setAuthError('Password must be at least 6 characters.');
+    }
     if (!isSignIn) {
-      if (!fullName.trim()) return setAuthError('Please enter your full name.');
-      if (password !== confirmPassword) return setAuthError('Passwords do not match!');
+      if (fullName.trim().length < 2) {
+        return setAuthError('Please enter your full name (at least 2 characters).');
+      }
+      if (password !== confirmPassword) {
+        return setAuthError('Passwords do not match.');
+      }
     }
 
     setLoading(true);
@@ -66,7 +73,7 @@ function AuthPanel({ defaultTab, onClose, handleLoginSuccess }) {
         ? await loginUser(email, password)
         : await registerUser(fullName.trim(), email, password);
       if (!res.success) return setAuthError(res.message);
-      onSuccess(res.user);
+      handleLoginSuccess(res.user);
     } finally {
       setLoading(false);
     }
@@ -88,6 +95,9 @@ function AuthPanel({ defaultTab, onClose, handleLoginSuccess }) {
           <button type="button" className="close-btn" onClick={onClose} aria-label="Close">&times;</button>
         </div>
 
+        {authMessage && !authError && (
+          <div className="auth-info-banner">{authMessage}</div>
+        )}
         {authError && <div className="auth-error-banner">{authError}</div>}
 
         <form className="auth-form" onSubmit={handleSubmit}>
@@ -142,15 +152,16 @@ function AuthPanel({ defaultTab, onClose, handleLoginSuccess }) {
 }
 
 export default function LoginSidebar() {
-  const { isAuthOpen: isOpen, closeAuth: onClose, authDefaultTab: defaultTab, handleLoginSuccess } = useAuth();
+  const { isAuthOpen, closeAuth, authDefaultTab, authMessage, handleLoginSuccess } = useAuth();
 
-  if (!isOpen) return null;
+  if (!isAuthOpen) return null;
 
   return (
     <AuthPanel
-      key={defaultTab || 'signin'}
-      defaultTab={defaultTab}
-      onClose={onClose}
+      key={authDefaultTab || 'signin'}
+      defaultTab={authDefaultTab}
+      authMessage={authMessage}
+      onClose={() => closeAuth()}
       handleLoginSuccess={handleLoginSuccess}
     />
   );

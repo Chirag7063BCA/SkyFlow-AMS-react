@@ -193,7 +193,7 @@ export default function MyBookingsTickets({ bookings }) {
           <div className="mb-empty-state">
             <div className="mb-empty-icon" aria-hidden="true">🎫</div>
             <h2>No bookings found</h2>
-            <p>There are no bookings in this category.</p>
+            <p>Book a flight or try another filter to see your tickets here.</p>
           </div>
         )}
 

@@ -2,6 +2,7 @@ import { useSearchParams } from 'react-router-dom';
 import logoGif from '../assets/navbar logo.gif';
 import planeBanner from '../assets/Hero.png';
 import BoardingBarcode from '../components/LocalComp/MyBookingsComp/BoardingBarcode';
+import { useAuth } from '../context/useAuth';
 import { decodePassToken, getBookingDocument, getBookings } from '../services/bookingApi';
 import './BoardingPassPage.css';
 
@@ -92,21 +93,13 @@ function PrintIcon() {
 
 export default function BoardingPassPage() {
   const [searchParams] = useSearchParams();
+  const { currentUser } = useAuth();
   const token = searchParams.get('t');
   const pnrParam = searchParams.get('pnr');
 
   let pass = decodePassToken(token);
-  if (pass) {
-    const localMatch = getBookings().find((b) => b.pnr === pass.pnr);
-    if (localMatch) {
-      pass = {
-        ...pass,
-        origin: localMatch.origin || pass.origin,
-        destination: localMatch.destination || pass.destination,
-      };
-    }
-  } else if (pnrParam) {
-    const found = getBookings().find((b) => b.pnr === pnrParam);
+  if (!pass && pnrParam && currentUser?.email) {
+    const found = getBookings(currentUser.email).find((b) => b.pnr === pnrParam);
     if (found) {
       const doc = getBookingDocument(found);
       pass = { ...found, docLabel: doc.label, docValue: doc.value };

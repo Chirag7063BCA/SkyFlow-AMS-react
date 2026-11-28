@@ -1,13 +1,9 @@
-@keyframes myBookingsFadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.mb-page-locked {
+  max-height: 85vh;
+  overflow: hidden;
+  filter: blur(6px);
+  pointer-events: none;
+  user-select: none;
 }
 
 .my-bookings-header {
@@ -28,7 +24,6 @@
       #fff 100%
     ),
     var(--my-bookings-hero-image) center / cover no-repeat;
-  animation: myBookingsFadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .my-bookings-header__inner {
@@ -68,40 +63,9 @@
   letter-spacing: -0.03em;
 }
 
-.my-bookings-word-wrapper {
-  display: inline-grid;
-  vertical-align: top;
-}
-
-.my-bookings-animated-word {
-  grid-area: 1 / 1;
+.my-bookings-word-accent {
   color: transparent;
-  opacity: 0;
   -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.96);
-  animation: myBookingsHeroTextSwap 6s infinite cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.my-bookings-animated-word.delay {
-  animation-delay: 3s;
-}
-
-@keyframes myBookingsHeroTextSwap {
-  0% {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-
-  15%,
-  35% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
-  50%,
-  100% {
-    transform: translateY(-20px);
-    opacity: 0;
-  }
 }
 
 .mb-subtitle {
@@ -121,16 +85,14 @@
   align-items: center;
   gap: 20px;
   padding: 16px 20px;
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.75);
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.85);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   cursor: pointer;
   font: inherit;
   text-align: left;
-  transition: transform 0.2s ease, background 0.2s ease;
+  transition: transform 0.18s ease, background 0.18s ease;
 }
 
 .mb-promo-card:hover {
@@ -289,25 +251,5 @@
     min-width: 0;
     justify-content: space-between;
     padding: 14px 16px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .my-bookings-header {
-    animation: none;
-  }
-
-  .my-bookings-animated-word {
-    animation: none;
-    opacity: 0;
-    transform: none;
-  }
-
-  .my-bookings-animated-word:first-child {
-    opacity: 1;
-  }
-
-  .my-bookings-animated-word.delay {
-    display: none;
   }
 }

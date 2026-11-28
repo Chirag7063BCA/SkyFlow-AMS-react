@@ -17,17 +17,6 @@
   gap: 32px;
 }
 
-@keyframes bpFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .mb-ticket-card {
   display: flex;
   min-width: 0;
@@ -36,15 +25,12 @@
   border-radius: 16px;
   background: #f8f4ec;
   box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
-  animation: bpFadeIn 0.35s ease both;
-  transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease;
+  contain: layout style;
+  transition: transform 0.18s ease;
 }
 
 .mb-ticket-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.14);
+  transform: translateY(-3px);
 }
 
 .mb-bp-strip {
@@ -449,7 +435,7 @@
   cursor: pointer;
   font-size: 11px;
   font-weight: 600;
-  transition: 0.2s;
+  transition: opacity 0.15s ease;
 }
 
 .mb-btn:hover {
@@ -507,7 +493,6 @@
   inset: 0;
   border: 0;
   background: rgba(15, 23, 42, 0.72);
-  backdrop-filter: blur(4px);
 }
 
 .mb-ticket-modal__dialog {

@@ -8,4 +8,8 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  // Only used now for test: expose Vite dev server on local Wi-Fi / hotspot for mobile QR scanning
+  server: {
+    host: true,
+  },
 })

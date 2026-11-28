@@ -24,7 +24,7 @@ export default function Destination() {
               </p>
             </div>
             <div className="destination-card card-sahara">
-              <img src={saharaImg} alt="Jaipur" className="card-bg-img" />
+              <img src={saharaImg} alt="Jaipur" className="card-bg-img" decoding="async" />
               <div className="card-content-overlay">
                 <span className="card-title">Jaipur</span>
               </div>
@@ -34,13 +34,13 @@ export default function Destination() {
           {/* Column 2: Card 2 & Card 3 */}
           <div className="bento-col col-middle">
             <div className="destination-card card-oasis">
-              <img src={oasisImg} alt="Goa" className="card-bg-img" />
+              <img src={oasisImg} alt="Goa" className="card-bg-img" decoding="async" />
               <div className="card-content-overlay">
                 <span className="card-title">Goa</span>
               </div>
             </div>
             <div className="destination-card card-crimson">
-              <img src={crimsonImg} alt="Rajasthan" className="card-bg-img" />
+              <img src={crimsonImg} alt="Rajasthan" className="card-bg-img" decoding="async" />
               <div className="card-content-overlay">
                 <span className="card-title">Rajasthan</span>
               </div>
@@ -50,7 +50,7 @@ export default function Destination() {
           {/* Column 3: Card 4 & See More Button */}
           <div className="bento-col col-right">
             <div className="destination-card card-alpine">
-              <img src={alpineImg} alt="Kashmir" className="card-bg-img" />
+              <img src={alpineImg} alt="Kashmir" className="card-bg-img" decoding="async" />
               <div className="card-content-overlay">
                 <span className="card-title">Kashmir</span>
               </div>

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../../context/useAuth';
 import { saveBooking } from '../../../../services/bookingApi';
 import FlightDetailsStep from './FlightDetailsStep';
 import FareSummary from './FareSummary';
@@ -35,13 +36,14 @@ export default function FlightBP({
   onClose,
 }) {
   const navigate = useNavigate();
+  const { currentUser, isLoggedIn, openAuth } = useAuth();
   const [step, setStep] = useState(1);
   const [travellers, setTravellers] = useState([]);
   const [travellerError, setTravellerError] = useState('');
   const [confirmedBooking, setConfirmedBooking] = useState(null);
   const [contact, setContact] = useState({
     countryCode: '+91',
-    email: '',
+    email: currentUser?.email || '',
     phone: '',
     hasGst: false,
     gstNumber: '',
@@ -125,6 +127,10 @@ export default function FlightBP({
   };
 
   const handleSaveBooking = () => {
+    if (!isLoggedIn) {
+      openAuth('signin', 'Please sign in to confirm your booking.');
+      return;
+    }
     if (confirmedBooking) return;
     const saved = saveBooking({
       flight,
@@ -132,6 +138,7 @@ export default function FlightBP({
       travellers,
       contact,
       totalAmount: fareAmount * bookingTravellerCount,
+      userEmail: currentUser?.email,
     });
     setConfirmedBooking(saved);
   };
@@ -197,6 +204,7 @@ export default function FlightBP({
                 onContactChange={updateContact}
                 formRef={formRef}
                 error={travellerError}
+                currentUser={currentUser}
               />
             )}
             {step === 3 && (

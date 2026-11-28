@@ -38,7 +38,7 @@ export default function Wanderlust() {
             </div>
           </div>
           <div className="cta-right-img-box">
-            <img src={beachImg} alt="Explore Wanderlust Beach" className="cta-img" />
+            <img src={beachImg} alt="Explore Wanderlust Beach" className="cta-img" decoding="async" />
             <div className="cta-img-badge">
               <svg
                 width="16"

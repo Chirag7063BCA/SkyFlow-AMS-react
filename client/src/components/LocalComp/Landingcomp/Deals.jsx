@@ -88,7 +88,7 @@ export default function Deals() {
           <div className="deals-cards-grid">
             {/* Card 1: Winter Escape */}
             <div className="deal-card">
-              <img src={winterEscapeImg} alt="Winter Escape Deal" className="deal-bg-img" />
+              <img src={winterEscapeImg} alt="Winter Escape Deal" className="deal-bg-img" decoding="async" />
               <div className="deal-overlay">
                 <h3 className="deal-title">
                   WINTER ESCAPE:
@@ -103,7 +103,7 @@ export default function Deals() {
 
             {/* Card 2: Family Fun Packages */}
             <div className="deal-card">
-              <img src={familyFunImg} alt="Family Fun Package Deal" className="deal-bg-img" />
+              <img src={familyFunImg} alt="Family Fun Package Deal" className="deal-bg-img" decoding="async" />
               <div className="deal-overlay">
                 <h3 className="deal-title">
                   FAMILY FUN PACKAGES:
@@ -202,7 +202,7 @@ export default function Deals() {
                 {testimonials.map((item, index) => (
                   <div className="testimonial-card" key={index}>
                     <div className="testimonial-author">
-                      <img src={item.avatar} alt={item.name} className="author-avatar" />
+                      <img src={item.avatar} alt={item.name} className="author-avatar" decoding="async" />
                       <span className="author-name">{item.name}</span>
                     </div>
                     <div className="testimonial-content">

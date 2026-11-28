@@ -1,8 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MyBookingsExplore from '../components/LocalComp/MyBookingsComp/MyBookingsExplore';
 import MyBookingsFilters from '../components/LocalComp/MyBookingsComp/MyBookingsFilters';
 import MyBookingsHeader from '../components/LocalComp/MyBookingsComp/MyBookingsHeader';
 import MyBookingsTickets from '../components/LocalComp/MyBookingsComp/MyBookingsTickets';
+import { useAuth } from '../context/useAuth';
 import { getBookings } from '../services/bookingApi';
 
 function matchesSearch(booking, query) {
@@ -20,14 +22,21 @@ function matchesSearch(booking, query) {
 }
 
 export default function MyBookingsPage() {
-  const [bookings] = useState(() => getBookings());
+  const { currentUser, isLoggedIn, openAuth, closeAuth } = useAuth();
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
 
-  const upcomingBookings = useMemo(
-    () => bookings.filter((b) => b.status === 'upcoming'),
-    [bookings],
-  );
+  useEffect(() => {
+    if (isLoggedIn) return;
+    openAuth('signin', 'Login to view your bookings.', null, () => {
+      navigate('/', { replace: true });
+    });
+    return () => closeAuth(false);
+  }, [isLoggedIn, openAuth, closeAuth, navigate]);
+
+  const bookings = getBookings(currentUser?.email);
+  const upcomingBookings = bookings.filter((b) => b.status === 'upcoming');
 
   const filteredBookings = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -38,7 +47,7 @@ export default function MyBookingsPage() {
   }, [bookings, searchQuery, statusFilter]);
 
   return (
-    <>
+    <div className={isLoggedIn ? '' : 'mb-page-locked'}>
       <MyBookingsHeader upcomingBookings={upcomingBookings}>
         <MyBookingsFilters
           searchQuery={searchQuery}
@@ -49,6 +58,6 @@ export default function MyBookingsPage() {
       </MyBookingsHeader>
       <MyBookingsTickets bookings={filteredBookings} />
       <MyBookingsExplore upcomingBookings={upcomingBookings} />
-    </>
+    </div>
   );
 }

@@ -58,8 +58,7 @@
   gap: 8px;
   border: 1px solid rgba(255, 255, 255, 0.36);
   border-radius: 999px;
-  background: rgba(0, 29, 57, 0.45);
-  backdrop-filter: blur(8px);
+  background: rgba(0, 29, 57, 0.72);
 }
 
 .mb-hub-pill input {
@@ -104,7 +103,7 @@
   padding: 1.4rem;
   border-radius: 18px;
   text-decoration: none;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.18s ease;
 }
 
 .mb-hub-card:hover {

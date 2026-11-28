@@ -18,6 +18,7 @@ import TrackFlightPage from './Pages/TrackFlightPage';
 import Footer from './components/globalcomp/Footer/Footer';
 import LoginSidebar from './components/globalcomp/LoginSidebar/LoginSidebar';
 import Navbar from './components/globalcomp/Navbar/Navbar';
+import ProtectedRoute from './components/globalcomp/ProtectedRoute';
 import { scrollToTop } from './utils/scrollToTop';
 
 function ScrollToTop() {
@@ -38,7 +39,6 @@ function PublicLayout() {
         <Outlet />
       </main>
       <Footer />
-      <LoginSidebar />
     </div>
   );
 }
@@ -57,9 +57,17 @@ export default function App() {
             <Route path="help" element={<HelpPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
-          <Route path="/admin/*" element={<AdminPage />} />
+          <Route
+            path="/admin/*"
+            element={
+              <ProtectedRoute adminOnly>
+                <AdminPage />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/boarding-pass" element={<BoardingPassPage />} />
         </Routes>
+        <LoginSidebar />
       </AuthProvider>
     </BrowserRouter>
   );

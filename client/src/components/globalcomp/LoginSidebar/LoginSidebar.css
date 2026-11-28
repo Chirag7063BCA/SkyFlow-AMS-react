@@ -8,8 +8,9 @@
 .drawer-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 29, 57, 0.6);
-  backdrop-filter: blur(6px);
+  background: rgba(0, 29, 57, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   animation: fadeInOverlay 0.2s ease-out;
 }
 @keyframes fadeInOverlay {
@@ -28,6 +29,7 @@
   width: 100%;
   max-width: 440px;
   height: 100vh;
+  height: 100dvh;
   background: #ffffff;
   color: #0f172a;
   padding: 2.5rem 2rem;
@@ -85,6 +87,18 @@
   background: #fee2e2;
   color: #dc2626;
   border-color: #fca5a5;
+}
+
+.auth-info-banner {
+  padding: 0.65rem 0.9rem;
+  margin-bottom: 1.2rem;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 9px;
+  color: #1e40af;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
 }
 
 .auth-error-banner {

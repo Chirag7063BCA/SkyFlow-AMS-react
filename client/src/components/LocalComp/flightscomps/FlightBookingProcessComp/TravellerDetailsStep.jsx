@@ -45,6 +45,7 @@ export default function TravellerDetailsStep({
   onContactChange,
   formRef,
   error,
+  currentUser,
 }) {
   const addedCount = travellers.filter(
     (traveller) => traveller.firstName.trim() && traveller.lastName.trim(),
@@ -61,11 +62,10 @@ export default function TravellerDetailsStep({
       <div className="traveller-login-banner">
         <span className="traveller-login-icon" aria-hidden="true" />
         <p>
-          Log in to view your{' '}
-          <strong>saved traveller list, unlock amazing deals</strong>{' '}
-          &amp; much more!
+          Signed in as{' '}
+          <strong>{currentUser?.name || currentUser?.email}</strong>. Booking
+          details will be linked to your account.
         </p>
-        <button type="button">LOGIN NOW</button>
       </div>
 
       <div className="traveller-count">

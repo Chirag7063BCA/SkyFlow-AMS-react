@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useAuth } from '../../../context/useAuth';
 import logo from '../../../assets/navbar logo.gif';
 import winterEscapeOffer from '../../../assets/highlights/winter_escape_offer.jpg';
 import luxuryHotelOffer from '../../../assets/highlights/luxury_hotel_offer.jpg';
@@ -182,8 +183,19 @@ const formatPrice = (amount, currency) =>
   `${currency.symbol}${Math.round(amount * currency.rate).toLocaleString()}`;
 
 function FlightCard({ flight, index, currency, search }) {
+  const { isLoggedIn, openAuth } = useAuth();
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const closeBooking = useCallback(() => setIsBookingOpen(false), []);
+
+  const handleBookClick = () => {
+    if (!isLoggedIn) {
+      openAuth('signin', 'Please sign in to book a flight.', () => {
+        setIsBookingOpen(true);
+      });
+      return;
+    }
+    setIsBookingOpen(true);
+  };
   const statusClass = String(flight.status || '')
     .toLowerCase()
     .replace(/\s+/g, '-');
@@ -232,13 +244,13 @@ function FlightCard({ flight, index, currency, search }) {
           <button
             className="flight-book-button"
             type="button"
-            onClick={() => setIsBookingOpen(true)}
+            onClick={handleBookClick}
           >
             Book flight
           </button>
         </div>
       </article>
-      {isBookingOpen && (
+      {isBookingOpen && isLoggedIn && (
         <FlightBP
           flight={flight}
           departureDate={search?.departureDate}

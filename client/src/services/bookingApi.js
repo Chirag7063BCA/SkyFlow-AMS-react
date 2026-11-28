@@ -1,7 +1,9 @@
-import { MY_BOOKINGS } from '../components/LocalComp/MyBookingsComp/myBookingsData';
-
 // Backend endpoint when ready: `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api'}/bookings`
 const STORAGE_KEY = 'skyflow_bookings';
+
+function normalizeEmail(email) {
+  return String(email || '').trim().toLowerCase();
+}
 
 export function formatDocument(type, number, mask = true) {
   const docType = String(type || '').toLowerCase();
@@ -42,8 +44,12 @@ function readSavedBookings() {
   }
 }
 
-export function getBookings() {
-  return [...readSavedBookings(), ...MY_BOOKINGS];
+export function getBookings(userEmail) {
+  const cleanEmail = normalizeEmail(userEmail);
+  if (!cleanEmail) return [];
+  return readSavedBookings().filter(
+    (booking) => normalizeEmail(booking.userEmail) === cleanEmail,
+  );
 }
 
 function formatDate(value) {
@@ -58,12 +64,13 @@ function formatDate(value) {
   });
 }
 
-export function saveBooking({ flight, departureDate, travellers, contact, totalAmount }) {
+export function saveBooking({ flight, departureDate, travellers, contact, totalAmount, userEmail }) {
   const main = travellers[0] || {};
   const fullName = `${main.firstName || ''} ${main.lastName || ''}`.trim();
 
   const booking = {
     pnr: `SF${Math.floor(1000 + Math.random() * 9000)}`,
+    userEmail: normalizeEmail(userEmail || contact?.email),
     status: 'upcoming',
     badge: 'CONFIRMED ✔',
     badgeTone: 'green',

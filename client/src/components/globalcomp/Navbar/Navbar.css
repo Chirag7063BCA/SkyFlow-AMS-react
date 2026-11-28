@@ -56,9 +56,8 @@
   list-style: none;
   padding: 0.22rem;
   border-radius: 0.35rem;
-  background: rgba(14, 32, 54, 0.75);
-  backdrop-filter: blur(8px);
-  transition: background 0.3s ease, box-shadow 0.3s ease;
+  background: rgba(14, 32, 54, 0.88);
+  transition: background-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .nav-link {

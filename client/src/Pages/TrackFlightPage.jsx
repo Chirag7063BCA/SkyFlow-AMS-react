@@ -48,18 +48,6 @@ export default function TrackFlightPage({ flights: initialFlights } = {}) {
     () => initialFlights || getFlightsSync(),
   );
 
-  useEffect(() => {
-    let isMounted = true;
-    if (!initialFlights) {
-      getFlights().then((data) => {
-        if (isMounted && Array.isArray(data)) setFlightsList(data);
-      });
-    }
-    return () => {
-      isMounted = false;
-    };
-  }, [initialFlights]);
-
   // Note current time on page load and keep updating every 5 seconds
   const [liveNow, setLiveNow] = useState(() => new Date());
 
@@ -89,6 +77,32 @@ export default function TrackFlightPage({ flights: initialFlights } = {}) {
   const [selectedFlight, setSelectedFlight] = useState(
     tenAirborneFlights[0] || null,
   );
+
+  useEffect(() => {
+    let isMounted = true;
+    if (!initialFlights) {
+      getFlights().then((data) => {
+        if (!isMounted || !Array.isArray(data)) return;
+
+        const now = new Date();
+        const currentAirborne = scanAirborneFlights(data, now);
+        const topTen = pickTenAirborneFlights(currentAirborne);
+
+        setFlightsList(data);
+        setLiveNow(now);
+        setSelectedFlight(topTen[0] || null);
+        setResultMessage(
+          topTen.length > 0
+            ? `Scanned at ${formatTime(now)}: ` +
+                `${currentAirborne.length} flights in sky — showing 10 live.`
+            : `Scanned at ${formatTime(now)}: no flights airborne.`,
+        );
+      });
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [initialFlights]);
 
   // Re-check current clock and refresh the 10 airborne flights list
   const handleRescanSky = () => {

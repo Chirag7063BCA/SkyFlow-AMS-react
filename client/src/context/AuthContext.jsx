@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
+import { updateUserProfile } from '../services/authApi';
 import { AuthContext } from './authContextDef';
 
 function getSavedUser() {
@@ -46,6 +47,22 @@ export function AuthProvider({ children }) {
     afterLoginRef.current = null;
   };
 
+  const updateProfile = async (updates) => {
+    if (!currentUser) return { success: false };
+    const nextUser = { ...currentUser, ...updates };
+    const res = await updateUserProfile(nextUser);
+
+    if (res.success && res.user) {
+      const synced = { ...nextUser, ...res.user };
+      localStorage.setItem('skyflow_user', JSON.stringify(synced));
+      setCurrentUser(synced);
+    } else if (res.offline) {
+      localStorage.setItem('skyflow_user', JSON.stringify(nextUser));
+      setCurrentUser(nextUser);
+    }
+    return res;
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('skyflow_user');
     afterLoginRef.current = null;
@@ -54,20 +71,19 @@ export function AuthProvider({ children }) {
   };
 
   const isLoggedIn = Boolean(currentUser?.email);
-  const isAdmin = isLoggedIn && currentUser.role === 'ROLE_ADMIN';
 
   return (
     <AuthContext.Provider
       value={{
         currentUser,
         isLoggedIn,
-        isAdmin,
         isAuthOpen,
         authDefaultTab,
         authMessage,
         openAuth,
         closeAuth,
         handleLoginSuccess,
+        updateProfile,
         handleLogout,
       }}
     >

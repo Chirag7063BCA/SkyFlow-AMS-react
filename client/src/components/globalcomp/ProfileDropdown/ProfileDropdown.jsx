@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react';
 import bookingsIcon from '../../../assets/dropdown-icons/bookings.svg';
 import helpIcon from '../../../assets/dropdown-icons/help.svg';
 import logoutIcon from '../../../assets/dropdown-icons/logout.svg';
+import profileIcon from '../../../assets/dropdown-icons/profile.svg';
 import './ProfileDropdown.css';
 
 const MENU_ITEMS = [
+  { id: 'profile', label: 'My Profile', icon: profileIcon },
   { id: 'bookings', label: 'My Bookings', icon: bookingsIcon },
   { id: 'help', label: 'Help Center', icon: helpIcon },
   { isDivider: true },

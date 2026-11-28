@@ -7,18 +7,17 @@ import {
   useLocation,
 } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
-import AdminPage from './Pages/AdminPage';
 import BoardingPassPage from './Pages/BoardingPassPage';
 import FlightsPage from './Pages/FlightsPage';
 import HelpPage from './Pages/Help/HelpPage';
 import LandingPage from './Pages/LandingPage';
 import MyBookingsPage from './Pages/MyBookingsPage';
 import NotFoundPage from './Pages/NotFoundPage';
+import ProfilePage from './Pages/ProfilePage';
 import TrackFlightPage from './Pages/TrackFlightPage';
 import Footer from './components/globalcomp/Footer/Footer';
 import LoginSidebar from './components/globalcomp/LoginSidebar/LoginSidebar';
 import Navbar from './components/globalcomp/Navbar/Navbar';
-import ProtectedRoute from './components/globalcomp/ProtectedRoute';
 import { scrollToTop } from './utils/scrollToTop';
 
 function ScrollToTop() {
@@ -54,17 +53,10 @@ export default function App() {
             <Route path="flights" element={<FlightsPage />} />
             <Route path="track" element={<TrackFlightPage />} />
             <Route path="bookings" element={<MyBookingsPage />} />
+            <Route path="profile" element={<ProfilePage />} />
             <Route path="help" element={<HelpPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
-          <Route
-            path="/admin/*"
-            element={
-              <ProtectedRoute adminOnly>
-                <AdminPage />
-              </ProtectedRoute>
-            }
-          />
           <Route path="/boarding-pass" element={<BoardingPassPage />} />
         </Routes>
         <LoginSidebar />

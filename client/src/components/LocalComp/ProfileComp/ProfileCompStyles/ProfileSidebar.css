@@ -1,0 +1,145 @@
+.pf-shell {
+  min-height: 100vh;
+  background: #f3f5f8;
+  color: #1e293b;
+}
+
+.pf-shell.locked {
+  max-height: 85vh;
+  overflow: hidden;
+  filter: blur(6px);
+  pointer-events: none;
+  user-select: none;
+}
+
+.pf-body {
+  position: relative;
+  z-index: 2;
+  max-width: 1120px;
+  margin: -2.25rem auto 0;
+  padding: 0 1.5rem 3.5rem;
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.pf-sidebar {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 12px;
+  padding: 1rem 0.65rem;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.pf-sidebar-title {
+  margin: 0 0 0.75rem;
+  padding: 0 0.75rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.04em;
+}
+
+.pf-sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.pf-nav-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.72rem 0.85rem;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #334155;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.pf-nav-item:hover {
+  background: #f8fafc;
+}
+
+.pf-nav-item.active {
+  background: #eff6ff;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.pf-nav-icon {
+  flex-shrink: 0;
+  color: #64748b;
+}
+
+.pf-nav-item.active .pf-nav-icon {
+  color: #2563eb;
+}
+
+.pf-nav-item.logout,
+.pf-nav-item.logout .pf-nav-icon {
+  color: #dc2626;
+}
+
+.pf-nav-item.logout:hover {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.pf-red-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ef4444;
+  margin-left: 0.15rem;
+}
+
+.pf-sidebar-divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 0.85rem 0.5rem;
+}
+
+@media (max-width: 860px) {
+  .pf-body {
+    grid-template-columns: 1fr;
+    margin-top: -1.75rem;
+    padding: 0 1rem 3rem;
+  }
+
+  .pf-sidebar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.85rem;
+  }
+
+  .pf-sidebar-title {
+    width: 100%;
+    margin-bottom: 0.35rem;
+    padding: 0 0.25rem;
+  }
+
+  .pf-sidebar-nav {
+    display: contents;
+  }
+
+  .pf-sidebar-divider {
+    display: none;
+  }
+
+  .pf-nav-item {
+    width: auto;
+    padding: 0.55rem 0.75rem;
+  }
+}

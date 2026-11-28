@@ -1,0 +1,226 @@
+.pf-main-card {
+  min-width: 0;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.5rem 1.75rem 2rem;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+}
+
+.pf-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1.1rem;
+}
+
+.pf-card-head h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.pf-save-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.pf-saved-text {
+  color: #16a34a;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.pf-error-text {
+  color: #dc2626;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.pf-name-section {
+  margin-bottom: 0.9rem;
+}
+
+.pf-name-section .pf-grid-2 {
+  margin-bottom: 0.25rem;
+}
+
+.pf-field.locked {
+  opacity: 0.72;
+}
+
+.pf-field.locked input {
+  cursor: not-allowed;
+}
+
+.pf-save-btn {
+  padding: 0.55rem 1.5rem;
+  border: 0;
+  border-radius: 7px;
+  background: #2563eb;
+  color: #ffffff;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+}
+
+.pf-save-btn:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.pf-save-btn:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.pf-info-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 1.4rem;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #eff6ff 0%, #f8fafc 100%);
+  border: 1px solid #e0e7ff;
+}
+
+.pf-info-strip strong {
+  display: block;
+  font-size: 0.88rem;
+  color: #0f172a;
+}
+
+.pf-info-strip p {
+  margin: 0.15rem 0 0;
+  font-size: 0.8rem;
+  color: #475569;
+}
+
+.pf-inline-link {
+  border: 0;
+  background: none;
+  color: #2563eb;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.pf-section-heading {
+  margin: 0 0 0.85rem;
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.pf-grid-2,
+.pf-grid-3 {
+  display: grid;
+  gap: 0.9rem;
+  margin-bottom: 0.9rem;
+}
+
+.pf-grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.pf-grid-3 {
+  grid-template-columns: 1fr 1fr 1.3fr;
+}
+
+.pf-field-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.pf-field {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #f3f4f6;
+}
+
+.pf-field span {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.03em;
+}
+
+.pf-field input,
+.pf-field select {
+  width: 100%;
+  border: 0;
+  padding: 0.1rem 0;
+  background: transparent;
+  color: #0f172a;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  outline: none;
+}
+
+.pf-hint {
+  margin-top: 0.35rem;
+  font-size: 0.74rem;
+  color: #64748b;
+}
+
+.pf-contact-block {
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.pf-contact-sub {
+  margin: -0.5rem 0 1rem;
+  font-size: 0.82rem;
+  color: #64748b;
+}
+
+.pf-email-box {
+  background: #ffffff;
+}
+
+.pf-email-val {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #0f172a;
+  word-break: break-word;
+}
+
+.pf-verified {
+  color: #16a34a;
+  font-weight: 700;
+}
+
+@media (max-width: 680px) {
+  .pf-main-card {
+    padding: 1.25rem 1rem 1.5rem;
+  }
+
+  .pf-grid-2,
+  .pf-grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .pf-info-strip {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

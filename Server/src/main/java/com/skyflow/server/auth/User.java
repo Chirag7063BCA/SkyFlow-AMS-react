@@ -23,6 +23,22 @@ public class User {
     @Column(nullable = false)
     private String role = "ROLE_USER";
 
+    @Column(columnDefinition = "TEXT")
+    private String picture;
+
+    private String phone;
+    private String gender;
+    private String dob;
+    private String nationality;
+    private String maritalStatus;
+    private String city;
+    private String state;
+    private String identityType;
+    private String identityNumber;
+
+    @Column(name = "name_updated_at")
+    private LocalDateTime nameUpdatedAt;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -60,6 +76,28 @@ public class User {
     public void setPassword(String password) { this.password = password; }
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+    public String getPicture() { return picture; }
+    public void setPicture(String picture) { this.picture = picture; }
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+    public String getGender() { return gender; }
+    public void setGender(String gender) { this.gender = gender; }
+    public String getDob() { return dob; }
+    public void setDob(String dob) { this.dob = dob; }
+    public String getNationality() { return nationality; }
+    public void setNationality(String nationality) { this.nationality = nationality; }
+    public String getMaritalStatus() { return maritalStatus; }
+    public void setMaritalStatus(String maritalStatus) { this.maritalStatus = maritalStatus; }
+    public String getCity() { return city; }
+    public void setCity(String city) { this.city = city; }
+    public String getState() { return state; }
+    public void setState(String state) { this.state = state; }
+    public String getIdentityType() { return identityType; }
+    public void setIdentityType(String identityType) { this.identityType = identityType; }
+    public String getIdentityNumber() { return identityNumber; }
+    public void setIdentityNumber(String identityNumber) { this.identityNumber = identityNumber; }
+    public LocalDateTime getNameUpdatedAt() { return nameUpdatedAt; }
+    public void setNameUpdatedAt(LocalDateTime nameUpdatedAt) { this.nameUpdatedAt = nameUpdatedAt; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
 }
